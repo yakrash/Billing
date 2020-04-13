@@ -11,27 +11,27 @@
     <context:component-scan base-package="su.bzz.springcourse"/>
 
 <!--    <bean id="rockMusic"-->
-<!--          class="su.bzz.springcourse.RockMusic">-->
+<!--          class="su.bzz.springcourse.music.RockMusic">-->
 <!--    </bean>-->
 
 <!--    <bean id="popMusic"-->
-<!--          class="su.bzz.springcourse.PopMusic">-->
+<!--          class="su.bzz.springcourse.music.PopMusic">-->
 <!--    </bean>-->
 
 <!--    <bean id="classicalMusic"-->
-<!--          class="su.bzz.springcourse.ClassicalMusic">-->
+<!--          class="su.bzz.springcourse.music.ClassicalMusic">-->
 <!--    </bean>-->
 
-    <bean id = "musicPlayerList"
-          class = "su.bzz.springcourse.MusicPlayer">
-        <property name="musicList">
-                <list>
-                    <ref bean="rockMusic"/>
-                    <ref bean="popMusic"/>
-                    <ref bean="classicalMusic"/>
-                </list>
-        </property>
-    </bean>
+<!--    <bean id = "musicPlayerList"-->
+<!--          class = "su.bzz.springcourse.music.MusicPlayer">-->
+<!--        <property name="musicList">-->
+<!--                <list>-->
+<!--                    <ref bean="rockMusic"/>-->
+<!--                    <ref bean="popMusic"/>-->
+<!--                    <ref bean="classicalMusic"/>-->
+<!--                </list>-->
+<!--        </property>-->
+<!--    </bean>-->
 
     <!--        <property name="name" value="${musicPlayer.name}" />-->
     <!--        <property name="volume" value="${musicPlayer.volume}"/>-->
@@ -39,7 +39,7 @@
 
 <!--    // конструктор-->
 <!--    <bean id = "musicPlayer"-->
-<!--          class = "su.bzz.springcourse.MusicPlayer">-->
+<!--          class = "su.bzz.springcourse.music.MusicPlayer">-->
 <!--        <constructor-arg ref = "musicBean"/>-->
 <!--    </bean>-->
 
