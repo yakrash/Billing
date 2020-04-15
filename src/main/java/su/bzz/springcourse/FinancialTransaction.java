@@ -23,5 +23,27 @@ public class FinancialTransaction {
 
     }
 
+    public int getSrc() {
+        return src;
+    }
 
+    public void setSrc(int src) {
+        this.src = src;
+    }
+
+    public int getDst() {
+        return dst;
+    }
+
+    public void setDst(int dst) {
+        this.dst = dst;
+    }
+
+    public double getAmount() {
+        return amount;
+    }
+
+    public void setAmount(double amount) {
+        this.amount = amount;
+    }
 }
