@@ -1,4 +1,4 @@
-package su.bzz.springcourse;
+package su.bzz.springcourse.music;
 
 import org.springframework.stereotype.Component;
 

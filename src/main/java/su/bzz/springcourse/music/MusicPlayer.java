@@ -1,7 +1,4 @@
-package su.bzz.springcourse;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+package su.bzz.springcourse.music;
 
 import java.util.ArrayList;
 import java.util.List;

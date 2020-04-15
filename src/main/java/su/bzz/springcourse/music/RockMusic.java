@@ -1,6 +1,4 @@
-package su.bzz.springcourse;
-
-import org.springframework.stereotype.Component;
+package su.bzz.springcourse.music;
 
 
 public class RockMusic implements Music {
