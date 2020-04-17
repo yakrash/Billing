@@ -1,23 +1,23 @@
 package su.bzz.springcourse;
 
-import su.bzz.springcourse.exception.ValidatorException;
-
 import java.util.logging.Logger;
 
 public class TransactionValidator {
+
     private final static Logger logger = Logger.getLogger(TransactionValidator.class.getName());
-    public void validator(FinancialTransaction financialTransaction) throws ValidatorException {
+    public boolean validator(FinancialTransaction financialTransaction) {
         if (financialTransaction.getSrc() < 0) {
             logger.info("Счет отправителя не валидный");
-            throw new ValidatorException();
+            return false;
         }
         if (financialTransaction.getDst() < 0) {
             logger.info("Счет получателя не валидный");
-            throw new ValidatorException();
+            return false;
         }
         if (financialTransaction.getAmount() < 0) {
             logger.info("Сумма перевода не валидная");
-            throw new ValidatorException();
+            return false;
         }
+        return true;
     }
 }

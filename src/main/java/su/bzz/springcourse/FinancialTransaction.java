@@ -1,8 +1,5 @@
 package su.bzz.springcourse;
 
-import org.springframework.stereotype.Component;
-
-@Component
 public class FinancialTransaction {
     private int src;
     private int dst;
