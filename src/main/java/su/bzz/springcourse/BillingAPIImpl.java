@@ -1,5 +1,5 @@
 package su.bzz.springcourse;
 
-public interface iBillingAPI {
+public interface BillingAPIImpl {
     public void transfer (FinancialTransaction financialTransaction);
 }

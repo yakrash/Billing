@@ -11,26 +11,20 @@ import java.util.List;
 @RestController
 @RequestMapping("/api")
 public class TransactionController {
-    private List<FinancialTransaction> listFinancialTransaction;
 
     @Autowired
-    BillingAPI billingAPI;
-
-    @Autowired
-    public TransactionController(BillingAPI billingAPI) {
-        this.listFinancialTransaction = billingAPI.listFinancialTransaction;
-    }
+    private BillingAPI billingAPI;
 
     @PostMapping("/transfer")
     ResponseEntity<?> create(@RequestBody FinancialTransaction financialTransaction) {
         billingAPI.transfer(financialTransaction);
-        listFinancialTransaction.add(financialTransaction);
+        billingAPI.listAdd(financialTransaction);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @GetMapping("/transfer")
     public ResponseEntity<List<FinancialTransaction>> read() {
 
-        return new ResponseEntity<>(listFinancialTransaction, HttpStatus.OK);
+        return new ResponseEntity<>(billingAPI.getList(), HttpStatus.OK);
     }
 }

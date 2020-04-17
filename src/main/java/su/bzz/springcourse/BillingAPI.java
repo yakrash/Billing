@@ -7,14 +7,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
-public class BillingAPI implements iBillingAPI {
+public class BillingAPI implements BillingAPIImpl {
 
-    List<FinancialTransaction> listFinancialTransaction;
-
-    @Autowired
-    public BillingAPI(List<FinancialTransaction> listFinancialTransaction) {
-        this.listFinancialTransaction = listFinancialTransaction;
-    }
+    private List<FinancialTransaction> listFinancialTransaction = new ArrayList<>();
 
     @Override
     public void transfer(FinancialTransaction financialTransaction) {
@@ -22,5 +17,13 @@ public class BillingAPI implements iBillingAPI {
             System.out.println("Error");
             System.out.println(listFinancialTransaction);
         }
+    }
+
+    public void listAdd (FinancialTransaction financialTransaction){
+        listFinancialTransaction.add(financialTransaction);
+    }
+
+    public List<FinancialTransaction> getList (){
+        return listFinancialTransaction;
     }
 }
