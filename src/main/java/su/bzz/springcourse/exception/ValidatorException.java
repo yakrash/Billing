@@ -1,4 +1,4 @@
 package su.bzz.springcourse.exception;
 
-public class ValidatorException extends Throwable {
+public class ValidatorException extends Exception {
 }
