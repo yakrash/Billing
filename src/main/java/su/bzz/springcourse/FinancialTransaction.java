@@ -1,5 +1,8 @@
 package su.bzz.springcourse;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class FinancialTransaction {
     private int src;
     private int dst;
@@ -19,6 +22,7 @@ public class FinancialTransaction {
         this.dst = dst;
         this.amount = amount;
     }
+
     public FinancialTransaction() {
 
     }
