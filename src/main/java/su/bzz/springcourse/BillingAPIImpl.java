@@ -1,11 +1,12 @@
 package su.bzz.springcourse;
 
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Component
+@Service
 public class BillingAPIImpl implements BillingAPI {
 
     private List<FinancialTransaction> listFinancialTransaction = new ArrayList<>();
@@ -16,9 +17,7 @@ public class BillingAPIImpl implements BillingAPI {
 
         if (transactionValidator.validator(financialTransaction)) {
             listFinancialTransaction.add(financialTransaction);
-        };
-
-
+        }
     }
 
     public List<FinancialTransaction> getList() {

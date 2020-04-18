@@ -18,7 +18,7 @@ public class TransactionController {
     }
 
     @PostMapping("/transfer")
-    ResponseEntity<?> create(@RequestBody FinancialTransaction financialTransaction)  {
+    ResponseEntity<?> create(@RequestBody FinancialTransaction financialTransaction) {
         billingAPI.transfer(financialTransaction);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
