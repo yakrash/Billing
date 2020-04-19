@@ -19,6 +19,7 @@ public class FinancialTransaction {
         this.dst = dst;
         this.amount = amount;
     }
+
     public FinancialTransaction() {
 
     }
