@@ -6,15 +6,18 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.concurrent.BlockingQueue;
 
 @RestController
 @RequestMapping("/api")
 public class TransactionController {
 
     private BillingAPIImpl billingAPI;
+    private TransactionLogger transactionLogger;
 
-    public TransactionController(BillingAPIImpl billingAPI) {
+    public TransactionController(BillingAPIImpl billingAPI, TransactionLogger transactionLogger) {
         this.billingAPI = billingAPI;
+        this.transactionLogger = transactionLogger;
     }
 
     @PostMapping("/transfer")
@@ -24,8 +27,8 @@ public class TransactionController {
     }
 
     @GetMapping("/transfer")
-    public ResponseEntity<List<FinancialTransaction>> read() {
+    public ResponseEntity<BlockingQueue<FinancialTransaction>> read() {
 
-        return new ResponseEntity<>(billingAPI.getList(), HttpStatus.OK);
+        return new ResponseEntity<>(transactionLogger.getLoggerFT(), HttpStatus.OK);
     }
 }
