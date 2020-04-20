@@ -10,7 +10,7 @@ public class TransactionLogger {
     private BlockingQueue<FinancialTransaction> loggerFT = new LinkedBlockingQueue<>();
     private BlockingQueue<FinancialTransaction> tempFT = new LinkedBlockingQueue<>();
 
-    public void push (FinancialTransaction financialTransaction){
+    public void push(FinancialTransaction financialTransaction) {
         loggerFT.add(financialTransaction);
     }
 
