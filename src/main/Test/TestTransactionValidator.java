@@ -12,7 +12,28 @@ public class TestTransactionValidator {
     public void validatorInvalidSource() {
         financialTransaction = new FinancialTransaction(-111, 222, 333.3);
         boolean check = transactionValidator.validator(financialTransaction);
-        Assert.assertEquals(check, false);
+        Assert.assertFalse(check);
+    }
+
+    @Test
+    public void validatorInvalidDst() {
+        financialTransaction = new FinancialTransaction(111, -222, 333.3);
+        boolean check = transactionValidator.validator(financialTransaction);
+        Assert.assertFalse(check);
+    }
+
+    @Test
+    public void validatorInvalidAmount() {
+        financialTransaction = new FinancialTransaction(111, 222, -333.3);
+        boolean check = transactionValidator.validator(financialTransaction);
+        Assert.assertFalse(check);
+    }
+
+    @Test
+    public void validatorValid() {
+        financialTransaction = new FinancialTransaction(111, 222, 333.3);
+        boolean check = transactionValidator.validator(financialTransaction);
+        Assert.assertTrue(check);
     }
 
 }
