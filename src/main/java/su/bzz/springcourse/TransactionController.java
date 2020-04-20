@@ -16,6 +16,7 @@ public class TransactionController {
     public TransactionController(BillingAPIImpl billingAPI, TransactionLogger transactionLogger) {
         this.billingAPI = billingAPI;
         this.transactionLogger = transactionLogger;
+        transactionLogger.parserLoggerFT();
     }
 
     @PostMapping("/transfer")
@@ -29,4 +30,6 @@ public class TransactionController {
 
         return new ResponseEntity<>(transactionLogger.getLoggerFT(), HttpStatus.OK);
     }
+
+
 }

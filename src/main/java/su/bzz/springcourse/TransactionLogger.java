@@ -2,8 +2,7 @@ package su.bzz.springcourse;
 
 import org.springframework.stereotype.Service;
 
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.*;
 
 @Service
 public class TransactionLogger {
@@ -20,5 +19,25 @@ public class TransactionLogger {
 
     public BlockingQueue<FinancialTransaction> getTempFT() {
         return tempFT;
+    }
+
+    Thread thread = new Thread(() -> {
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        loggerFT.drainTo(tempFT);
+        System.out.println("В нашей зашлушке: " + getTempFT());
+    });
+
+    public void parserLoggerFT () {
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+
+        while (true) {
+            executorService.submit(thread);
+        }
+
+
     }
 }
