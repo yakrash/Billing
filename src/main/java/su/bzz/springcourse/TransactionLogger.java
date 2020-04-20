@@ -21,23 +21,20 @@ public class TransactionLogger {
         return tempFT;
     }
 
-    Thread thread = new Thread(() -> {
-        try {
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+    Thread threadLoggerInTemp = new Thread(() -> {
+        while (true) {
+            try {
+                Thread.sleep(5000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            loggerFT.drainTo(tempFT);
+            System.out.println("В нашей зашлушке: " + getTempFT());
         }
-        loggerFT.drainTo(tempFT);
-        System.out.println("В нашей зашлушке: " + getTempFT());
     });
 
-    public void parserLoggerFT () {
+    public void parserLoggerFT() {
         ExecutorService executorService = Executors.newSingleThreadExecutor();
-
-        while (true) {
-            executorService.submit(thread);
-        }
-
-
+        executorService.submit(threadLoggerInTemp);
     }
 }
