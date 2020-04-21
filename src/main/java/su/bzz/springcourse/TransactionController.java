@@ -1,5 +1,6 @@
 package su.bzz.springcourse;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,10 +18,10 @@ public class TransactionController {
     private BillingAPIImpl billingAPI;
     private TransactionLogger transactionLogger;
 
+    @Autowired
     public TransactionController(BillingAPIImpl billingAPI, TransactionLogger transactionLogger) {
         this.billingAPI = billingAPI;
         this.transactionLogger = transactionLogger;
-        transactionLogger.parserLoggerFT();
     }
 
     @PostMapping("/transfer")

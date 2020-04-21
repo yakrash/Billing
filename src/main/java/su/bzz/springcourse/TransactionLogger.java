@@ -2,6 +2,8 @@ package su.bzz.springcourse;
 
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -25,11 +27,19 @@ public class TransactionLogger {
         return tempFinancialTransaction;
     }
 
+    ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
+
+    @PostConstruct
     public void parserLoggerFT() {
-        ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
         executorService.scheduleAtFixedRate(new Thread(() -> {
             loggerFinancialTransaction.drainTo(tempFinancialTransaction);
             System.out.println("В нашей заглушке: " + getTempFinancialTransaction());
         }), 0, 5, TimeUnit.SECONDS);
     }
+
+    @PreDestroy
+    public void shutDownd() {
+        executorService.shutdown();
+    }
+
 }
