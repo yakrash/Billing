@@ -6,7 +6,7 @@ import su.bzz.springcourse.TransactionValidator;
 
 public class TestTransactionValidator {
     private FinancialTransaction financialTransaction;
-    TransactionValidator transactionValidator = new TransactionValidator();
+    private TransactionValidator transactionValidator = new TransactionValidator();
 
     @Test
     public void validatorInvalidSource() {
@@ -23,8 +23,29 @@ public class TestTransactionValidator {
     }
 
     @Test
-    public void validatorInvalidAmount() {
-        financialTransaction = new FinancialTransaction(111, 222, -333.3);
+    public void validatorInvalidSrcDst() {
+        financialTransaction = new FinancialTransaction(-111, -222, 333.3);
+        boolean check = transactionValidator.validator(financialTransaction);
+        Assert.assertFalse(check);
+    }
+
+    @Test
+    public void validatorInvalidSrcAmount() {
+        financialTransaction = new FinancialTransaction(-111, 222, -333.3);
+        boolean check = transactionValidator.validator(financialTransaction);
+        Assert.assertFalse(check);
+    }
+
+    @Test
+    public void validatorInvalidDstAmount() {
+        financialTransaction = new FinancialTransaction(111, -222, -333.3);
+        boolean check = transactionValidator.validator(financialTransaction);
+        Assert.assertFalse(check);
+    }
+
+    @Test
+    public void validatorInvalidAll() {
+        financialTransaction = new FinancialTransaction(-111, -222, -333.3);
         boolean check = transactionValidator.validator(financialTransaction);
         Assert.assertFalse(check);
     }

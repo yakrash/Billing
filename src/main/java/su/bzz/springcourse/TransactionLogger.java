@@ -2,32 +2,34 @@ package su.bzz.springcourse;
 
 import org.springframework.stereotype.Service;
 
-import java.util.concurrent.*;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class TransactionLogger {
-    private BlockingQueue<FinancialTransaction> loggerFT = new LinkedBlockingQueue<>();
-    private BlockingQueue<FinancialTransaction> tempFT = new LinkedBlockingQueue<>();
+    private BlockingQueue<FinancialTransaction> loggerFinancialTransaction = new LinkedBlockingQueue<>();
+    private BlockingQueue<FinancialTransaction> tempFinancialTransaction = new LinkedBlockingQueue<>();
 
     public void push(FinancialTransaction financialTransaction) {
-        loggerFT.add(financialTransaction);
+        loggerFinancialTransaction.add(financialTransaction);
     }
 
-    public BlockingQueue<FinancialTransaction> getLoggerFT() {
-        return loggerFT;
+    public BlockingQueue<FinancialTransaction> getLoggerFinancialTransaction() {
+        return loggerFinancialTransaction;
     }
 
-    public BlockingQueue<FinancialTransaction> getTempFT() {
-        return tempFT;
+    public BlockingQueue<FinancialTransaction> getTempFinancialTransaction() {
+        return tempFinancialTransaction;
     }
-
-    Thread threadLoggerInTemp = new Thread(() -> {
-        loggerFT.drainTo(tempFT);
-        System.out.println("В нашей зашлушке: " + getTempFT());
-    });
 
     public void parserLoggerFT() {
         ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
-        executorService.scheduleAtFixedRate(threadLoggerInTemp, 0, 5, TimeUnit.SECONDS);
+        executorService.scheduleAtFixedRate(new Thread(() -> {
+            loggerFinancialTransaction.drainTo(tempFinancialTransaction);
+            System.out.println("В нашей заглушке: " + getTempFinancialTransaction());
+        }), 0, 5, TimeUnit.SECONDS);
     }
 }
