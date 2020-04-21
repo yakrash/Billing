@@ -3,18 +3,25 @@ package su.bzz.springcourse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
+import java.util.concurrent.BlockingQueue;
 
 @RestController
 @RequestMapping("/api")
 public class TransactionController {
 
     private BillingAPIImpl billingAPI;
+    private TransactionLogger transactionLogger;
 
-    public TransactionController(BillingAPIImpl billingAPI) {
+    @Autowired
+    public TransactionController(BillingAPIImpl billingAPI, TransactionLogger transactionLogger) {
         this.billingAPI = billingAPI;
+        this.transactionLogger = transactionLogger;
     }
 
     @PostMapping("/transfer")
@@ -24,8 +31,10 @@ public class TransactionController {
     }
 
     @GetMapping("/transfer")
-    public ResponseEntity<List<FinancialTransaction>> read() {
+    public ResponseEntity<BlockingQueue<FinancialTransaction>> read() {
 
-        return new ResponseEntity<>(billingAPI.getList(), HttpStatus.OK);
+        return new ResponseEntity<>(transactionLogger.getLoggerFinancialTransaction(), HttpStatus.OK);
     }
+
+
 }
