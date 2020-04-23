@@ -1,9 +1,12 @@
 package su.bzz.springcourse;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import su.bzz.springcourse.utils.TransactionMerger;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import java.util.Queue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -14,6 +17,7 @@ import java.util.concurrent.TimeUnit;
 public class TransactionLogger {
     private BlockingQueue<FinancialTransaction> loggerFinancialTransaction = new LinkedBlockingQueue<>();
     private BlockingQueue<FinancialTransaction> tempFinancialTransaction = new LinkedBlockingQueue<>();
+    private ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
 
     public void push(FinancialTransaction financialTransaction) {
         loggerFinancialTransaction.add(financialTransaction);
@@ -27,8 +31,6 @@ public class TransactionLogger {
         return tempFinancialTransaction;
     }
 
-    ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
-
     @PostConstruct
     public void parserLoggerFT() {
         executorService.scheduleAtFixedRate(new Thread(() -> {
@@ -38,7 +40,7 @@ public class TransactionLogger {
     }
 
     @PreDestroy
-    public void shutDownd() {
+    public void shutDownExecutorService() {
         executorService.shutdown();
     }
 
