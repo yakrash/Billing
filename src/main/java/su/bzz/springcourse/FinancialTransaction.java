@@ -1,5 +1,7 @@
 package su.bzz.springcourse;
 
+import java.util.Objects;
+
 public class FinancialTransaction {
     private int src;
     private int dst;
@@ -46,5 +48,19 @@ public class FinancialTransaction {
 
     public void setAmount(double amount) {
         this.amount = amount;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        FinancialTransaction that = (FinancialTransaction) o;
+        return src == that.src &&
+                dst == that.dst;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(src, dst);
     }
 }

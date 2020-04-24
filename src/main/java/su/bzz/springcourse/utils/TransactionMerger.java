@@ -3,40 +3,28 @@ package su.bzz.springcourse.utils;
 import su.bzz.springcourse.FinancialTransaction;
 
 import javax.annotation.PostConstruct;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.BlockingQueue;
 
 public class TransactionMerger {
+    private final static List<FinancialTransaction> transactionsMerger = new ArrayList<>();
+    private final static Map<FinancialTransaction, Double> transactionsMergerMap = new HashMap<>();
 
     @PostConstruct
-    public static void merge(BlockingQueue<FinancialTransaction> tempFinancialTransaction) {
-        final List<FinancialTransaction> transactionsMerger = new ArrayList<>();
-        Iterator<FinancialTransaction> financialTransactionIterator =
-                transactionsMerger.iterator();
-
+    public static Map<FinancialTransaction, Double> merge(BlockingQueue<FinancialTransaction> tempFinancialTransaction) {
         tempFinancialTransaction.drainTo(transactionsMerger);
 
-        for (int i = 0; i < transactionsMerger.size() - 1; i++) {
-            for (int j = 1; j < transactionsMerger.size(); j++) {
-                if (transactionsMerger.get(i).getSrc() == transactionsMerger.get(j).getSrc() &&
-                        transactionsMerger.get(i).getDst() == transactionsMerger.get(j).getDst()) {
-
-                    transactionsMerger.get(i).setAmount(transactionsMerger.get(i).getAmount() +
-                            transactionsMerger.get(j).getAmount());
-                    transactionsMerger.get(j).setAmount(0);
-                }
+        for(FinancialTransaction e : transactionsMerger){
+            if(transactionsMergerMap.containsKey(e)){
+                transactionsMergerMap.put(e, transactionsMergerMap.get(e) + e.getAmount());
+            }else{
+                transactionsMergerMap.put(e, e.getAmount());
             }
         }
 
-        while (financialTransactionIterator.hasNext()) {
-            FinancialTransaction next = financialTransactionIterator.next();
-            if (next.getAmount() == 0) {
-                financialTransactionIterator.remove();
-            }
-        }
-        System.out.println("объединяем: " + transactionsMerger);
-        // return transactionsMerger;
+        transactionsMerger.clear();
+
+//        System.out.println("объединяем: " + transactionsMergerMap);
+         return transactionsMergerMap;
     }
 }
