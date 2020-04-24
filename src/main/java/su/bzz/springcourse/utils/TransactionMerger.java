@@ -14,17 +14,15 @@ public class TransactionMerger {
     public static Map<FinancialTransaction, Double> merge(BlockingQueue<FinancialTransaction> tempFinancialTransaction) {
         tempFinancialTransaction.drainTo(transactionsMerger);
 
-        for(FinancialTransaction e : transactionsMerger){
-            if(transactionsMergerMap.containsKey(e)){
+        for (FinancialTransaction e : transactionsMerger) {
+            if (transactionsMergerMap.containsKey(e)) {
                 transactionsMergerMap.put(e, transactionsMergerMap.get(e) + e.getAmount());
-            }else{
+            } else {
                 transactionsMergerMap.put(e, e.getAmount());
             }
         }
-
         transactionsMerger.clear();
 
-//        System.out.println("объединяем: " + transactionsMergerMap);
-         return transactionsMergerMap;
+        return transactionsMergerMap;
     }
 }
