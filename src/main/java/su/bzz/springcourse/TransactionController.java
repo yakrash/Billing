@@ -15,8 +15,8 @@ import java.util.concurrent.BlockingQueue;
 @RequestMapping("/api")
 public class TransactionController {
 
-    private BillingAPIImpl billingAPI;
-    private TransactionLogger transactionLogger;
+    private final BillingAPIImpl billingAPI;
+    private final TransactionLogger transactionLogger;
 
     @Autowired
     public TransactionController(BillingAPIImpl billingAPI, TransactionLogger transactionLogger) {

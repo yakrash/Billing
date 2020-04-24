@@ -7,15 +7,6 @@ public class FinancialTransaction {
     private int dst;
     private double amount;
 
-    @Override
-    public String toString() {
-        return "FinancialTransaction{" +
-                "src=" + src +
-                ", dst=" + dst +
-                ", amount=" + amount +
-                '}';
-    }
-
     public FinancialTransaction(int src, int dst, double amount) {
         this.src = src;
         this.dst = dst;
@@ -24,6 +15,15 @@ public class FinancialTransaction {
 
     public FinancialTransaction() {
 
+    }
+
+    @Override
+    public String toString() {
+        return "FinancialTransaction{" +
+                "src=" + src +
+                ", dst=" + dst +
+                ", amount=" + amount +
+                '}';
     }
 
     public int getSrc() {

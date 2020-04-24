@@ -3,7 +3,10 @@ package su.bzz.springcourse.utils;
 import su.bzz.springcourse.FinancialTransaction;
 
 import javax.annotation.PostConstruct;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 
 public class TransactionMerger {
