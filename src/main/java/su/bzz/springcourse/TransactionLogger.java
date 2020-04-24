@@ -36,6 +36,7 @@ public class TransactionLogger {
         executorService.scheduleAtFixedRate(new Thread(() -> {
             loggerFinancialTransaction.drainTo(tempFinancialTransaction);
             System.out.println("В нашей заглушке: " + getTempFinancialTransaction());
+            TransactionMerger.merge(tempFinancialTransaction);
         }), 0, 5, TimeUnit.SECONDS);
     }
 
