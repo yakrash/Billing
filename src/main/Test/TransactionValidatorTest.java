@@ -4,7 +4,7 @@ import su.bzz.springcourse.FinancialTransaction;
 import su.bzz.springcourse.TransactionValidator;
 
 
-public class TestTransactionValidator {
+public class TransactionValidatorTest {
     private FinancialTransaction financialTransaction;
     private TransactionValidator transactionValidator = new TransactionValidator();
 
