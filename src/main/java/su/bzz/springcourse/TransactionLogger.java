@@ -5,6 +5,8 @@ import su.bzz.springcourse.utils.TransactionMerger;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -16,6 +18,7 @@ public class TransactionLogger {
     private final BlockingQueue<FinancialTransaction> loggerFinancialTransaction = new LinkedBlockingQueue<>();
     private final BlockingQueue<FinancialTransaction> tempFinancialTransaction = new LinkedBlockingQueue<>();
     private final ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
+    private final List<FinancialTransaction> transactionsMerger = new ArrayList<>();
 
     public void push(FinancialTransaction financialTransaction) {
         loggerFinancialTransaction.add(financialTransaction);
@@ -29,12 +32,20 @@ public class TransactionLogger {
         return tempFinancialTransaction;
     }
 
+    public List<FinancialTransaction> getTransactionsMerger() {
+        return transactionsMerger;
+    }
+
     @PostConstruct
     public void parserLoggerFT() {
         executorService.scheduleAtFixedRate(new Thread(() -> {
             loggerFinancialTransaction.drainTo(tempFinancialTransaction);
             System.out.println("В нашей заглушке: " + getTempFinancialTransaction());
-            TransactionMerger.merge(tempFinancialTransaction);
+
+            tempFinancialTransaction.drainTo(transactionsMerger);
+            TransactionMerger.merge(transactionsMerger);
+
+
         }), 0, 5, TimeUnit.SECONDS);
     }
 

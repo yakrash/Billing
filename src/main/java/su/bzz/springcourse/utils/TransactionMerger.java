@@ -3,19 +3,16 @@ package su.bzz.springcourse.utils;
 import su.bzz.springcourse.FinancialTransaction;
 
 import javax.annotation.PostConstruct;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.BlockingQueue;
 
 public class TransactionMerger {
-    private final static List<FinancialTransaction> transactionsMerger = new ArrayList<>();
-    private final static Map<FinancialTransaction, Double> transactionsMergerMap = new HashMap<>();
 
     @PostConstruct
-    public static Map<FinancialTransaction, Double> merge(BlockingQueue<FinancialTransaction> tempFinancialTransaction) {
-        tempFinancialTransaction.drainTo(transactionsMerger);
+    public static Map<FinancialTransaction, Double> merge(List<FinancialTransaction> transactionsMerger) {
+
+        final Map<FinancialTransaction, Double> transactionsMergerMap = new HashMap<>();
 
         for (FinancialTransaction e : transactionsMerger) {
             if (transactionsMergerMap.containsKey(e)) {
