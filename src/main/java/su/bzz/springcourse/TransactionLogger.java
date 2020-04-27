@@ -16,9 +16,7 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class TransactionLogger {
     private final BlockingQueue<FinancialTransaction> loggerFinancialTransaction = new LinkedBlockingQueue<>();
-    private final BlockingQueue<FinancialTransaction> tempFinancialTransaction = new LinkedBlockingQueue<>();
     private final ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
-    private final List<FinancialTransaction> transactionsMerger = new ArrayList<>();
 
     public void push(FinancialTransaction financialTransaction) {
         loggerFinancialTransaction.add(financialTransaction);
@@ -28,19 +26,14 @@ public class TransactionLogger {
         return loggerFinancialTransaction;
     }
 
-    public BlockingQueue<FinancialTransaction> getTempFinancialTransaction() {
-        return tempFinancialTransaction;
-    }
-
-    public List<FinancialTransaction> getTransactionsMerger() {
-        return transactionsMerger;
-    }
-
     @PostConstruct
     public void parserLoggerFT() {
         executorService.scheduleAtFixedRate(new Thread(() -> {
+            List<FinancialTransaction> transactionsMerger = new ArrayList<>();
+            BlockingQueue<FinancialTransaction> tempFinancialTransaction = new LinkedBlockingQueue<>();
+
             loggerFinancialTransaction.drainTo(tempFinancialTransaction);
-            System.out.println("В нашей заглушке: " + getTempFinancialTransaction());
+            System.out.println("В нашей заглушке: " + tempFinancialTransaction);
 
             tempFinancialTransaction.drainTo(transactionsMerger);
             TransactionMerger.merge(transactionsMerger);
