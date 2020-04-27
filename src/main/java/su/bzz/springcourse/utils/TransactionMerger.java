@@ -22,10 +22,7 @@ public class TransactionMerger {
             }
             transactionsMergerMap.put(key, e);
         }
-
         ArrayList<FinancialTransaction> result = new ArrayList<>(transactionsMergerMap.values());
-        transactionsMerger.clear();
-
         return result;
     }
 }
