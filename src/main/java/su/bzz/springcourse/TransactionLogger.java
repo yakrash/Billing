@@ -44,8 +44,6 @@ public class TransactionLogger {
 
             tempFinancialTransaction.drainTo(transactionsMerger);
             TransactionMerger.merge(transactionsMerger);
-
-
         }), 0, 5, TimeUnit.SECONDS);
     }
 
