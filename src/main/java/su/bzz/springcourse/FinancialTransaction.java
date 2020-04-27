@@ -56,11 +56,12 @@ public class FinancialTransaction {
         if (o == null || getClass() != o.getClass()) return false;
         FinancialTransaction that = (FinancialTransaction) o;
         return src == that.src &&
-                dst == that.dst;
+                dst == that.dst &&
+                Double.compare(that.amount, amount) == 0;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(src, dst);
+        return Objects.hash(src, dst, amount);
     }
 }
