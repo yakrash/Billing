@@ -19,12 +19,12 @@ public class TransactionLogger {
     private final BlockingQueue<FinancialTransaction> loggerFinancialTransaction = new LinkedBlockingQueue<>();
     private final ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
 
-    public void push(FinancialTransaction financialTransaction) {
-        loggerFinancialTransaction.add(financialTransaction);
-    }
-
     public BlockingQueue<FinancialTransaction> getLoggerFinancialTransaction() {
         return loggerFinancialTransaction;
+    }
+
+    public void push(FinancialTransaction financialTransaction) {
+        loggerFinancialTransaction.add(financialTransaction);
     }
 
     @PostConstruct
