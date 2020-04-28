@@ -15,6 +15,7 @@ import java.util.concurrent.TimeUnit;
 
 @Service
 public class TransactionLogger {
+
     private final BlockingQueue<FinancialTransaction> loggerFinancialTransaction = new LinkedBlockingQueue<>();
     private final ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
 
@@ -37,6 +38,7 @@ public class TransactionLogger {
 
             tempFinancialTransaction.drainTo(transactionsMerger);
             TransactionMerger.merge(transactionsMerger);
+
         }), 0, 5, TimeUnit.SECONDS);
     }
 
