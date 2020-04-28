@@ -1,9 +1,12 @@
 package su.bzz.springcourse;
 
 import org.springframework.stereotype.Service;
+import su.bzz.springcourse.utils.TransactionMerger;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -12,8 +15,9 @@ import java.util.concurrent.TimeUnit;
 
 @Service
 public class TransactionLogger {
-    private BlockingQueue<FinancialTransaction> loggerFinancialTransaction = new LinkedBlockingQueue<>();
-    private BlockingQueue<FinancialTransaction> tempFinancialTransaction = new LinkedBlockingQueue<>();
+
+    private final BlockingQueue<FinancialTransaction> loggerFinancialTransaction = new LinkedBlockingQueue<>();
+    private final ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
 
     public void push(FinancialTransaction financialTransaction) {
         loggerFinancialTransaction.add(financialTransaction);
@@ -23,22 +27,23 @@ public class TransactionLogger {
         return loggerFinancialTransaction;
     }
 
-    public BlockingQueue<FinancialTransaction> getTempFinancialTransaction() {
-        return tempFinancialTransaction;
-    }
-
-    ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
-
     @PostConstruct
     public void parserLoggerFT() {
         executorService.scheduleAtFixedRate(new Thread(() -> {
+            List<FinancialTransaction> transactionsMerger = new ArrayList<>();
+            BlockingQueue<FinancialTransaction> tempFinancialTransaction = new LinkedBlockingQueue<>();
+
             loggerFinancialTransaction.drainTo(tempFinancialTransaction);
-            System.out.println("В нашей заглушке: " + getTempFinancialTransaction());
+            System.out.println("В нашей заглушке: " + tempFinancialTransaction);
+
+            tempFinancialTransaction.drainTo(transactionsMerger);
+            TransactionMerger.merge(transactionsMerger);
+
         }), 0, 5, TimeUnit.SECONDS);
     }
 
     @PreDestroy
-    public void shutDownd() {
+    public void shutDownExecutorService() {
         executorService.shutdown();
     }
 

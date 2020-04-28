@@ -6,8 +6,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class BillingAPIImpl implements BillingAPI {
 
-    private TransactionValidator transactionValidator = new TransactionValidator();
-    private TransactionLogger transactionLogger;
+    private final TransactionValidator transactionValidator = new TransactionValidator();
+    private final TransactionLogger transactionLogger;
 
     @Autowired
     public BillingAPIImpl(TransactionLogger transactionLogger) {

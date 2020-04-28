@@ -1,18 +1,11 @@
 package su.bzz.springcourse;
 
+import java.util.Objects;
+
 public class FinancialTransaction {
     private int src;
     private int dst;
     private double amount;
-
-    @Override
-    public String toString() {
-        return "FinancialTransaction{" +
-                "src=" + src +
-                ", dst=" + dst +
-                ", amount=" + amount +
-                '}';
-    }
 
     public FinancialTransaction(int src, int dst, double amount) {
         this.src = src;
@@ -22,6 +15,15 @@ public class FinancialTransaction {
 
     public FinancialTransaction() {
 
+    }
+
+    @Override
+    public String toString() {
+        return "FinancialTransaction{" +
+                "src=" + src +
+                ", dst=" + dst +
+                ", amount=" + amount +
+                '}';
     }
 
     public int getSrc() {
@@ -46,5 +48,20 @@ public class FinancialTransaction {
 
     public void setAmount(double amount) {
         this.amount = amount;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        FinancialTransaction that = (FinancialTransaction) o;
+        return src == that.src &&
+                dst == that.dst &&
+                Double.compare(that.amount, amount) == 0;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(src, dst, amount);
     }
 }
