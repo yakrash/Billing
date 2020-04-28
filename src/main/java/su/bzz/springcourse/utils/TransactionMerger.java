@@ -10,7 +10,6 @@ import java.util.Map;
 
 public class TransactionMerger {
 
-    @PostConstruct
     public static ArrayList<FinancialTransaction> merge(List<FinancialTransaction> transactionsMerger) {
         final Map<String, FinancialTransaction> transactionsMergerMap = new HashMap<>();
 
