@@ -2,6 +2,7 @@ package su.bzz.springcourse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import su.bzz.springcourse.model.FinancialTransaction;
 
 @Service
 public class BillingAPIImpl implements BillingAPI {

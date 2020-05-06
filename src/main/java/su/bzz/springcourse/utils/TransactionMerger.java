@@ -1,6 +1,6 @@
 package su.bzz.springcourse.utils;
 
-import su.bzz.springcourse.FinancialTransaction;
+import su.bzz.springcourse.model.FinancialTransaction;
 
 import java.util.ArrayList;
 import java.util.HashMap;

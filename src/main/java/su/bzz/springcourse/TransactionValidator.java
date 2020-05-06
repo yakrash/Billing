@@ -1,5 +1,7 @@
 package su.bzz.springcourse;
 
+import su.bzz.springcourse.model.FinancialTransaction;
+
 import java.util.logging.Logger;
 
 public class TransactionValidator {

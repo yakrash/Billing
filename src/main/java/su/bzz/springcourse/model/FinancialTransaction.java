@@ -1,4 +1,4 @@
-package su.bzz.springcourse;
+package su.bzz.springcourse.model;
 
 import java.util.Objects;
 

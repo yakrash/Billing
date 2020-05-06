@@ -1,6 +1,7 @@
 package su.bzz.springcourse;
 
 import org.springframework.stereotype.Service;
+import su.bzz.springcourse.model.FinancialTransaction;
 import su.bzz.springcourse.utils.TransactionMerger;
 
 import javax.annotation.PostConstruct;

@@ -1,4 +1,4 @@
-package su.bzz.springcourse;
+package su.bzz.springcourse.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -8,6 +8,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import su.bzz.springcourse.BillingAPIImpl;
+import su.bzz.springcourse.TransactionLogger;
+import su.bzz.springcourse.model.FinancialTransaction;
 
 import java.util.concurrent.BlockingQueue;
 
