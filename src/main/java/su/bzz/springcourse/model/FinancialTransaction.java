@@ -3,6 +3,10 @@ package su.bzz.springcourse.model;
 import java.util.Objects;
 
 public class FinancialTransaction {
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.AUTO)
+    private long id;
+
     private int src;
     private int dst;
     private double amount;
@@ -13,17 +17,12 @@ public class FinancialTransaction {
         this.amount = amount;
     }
 
-    public FinancialTransaction() {
+    public FinancialTransaction(){
 
     }
 
-    @Override
-    public String toString() {
-        return "FinancialTransaction{" +
-                "src=" + src +
-                ", dst=" + dst +
-                ", amount=" + amount +
-                '}';
+    public long getId() {
+        return id;
     }
 
     public int getSrc() {
@@ -55,13 +54,24 @@ public class FinancialTransaction {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         FinancialTransaction that = (FinancialTransaction) o;
-        return src == that.src &&
+        return id == that.id &&
+                src == that.src &&
                 dst == that.dst &&
                 Double.compare(that.amount, amount) == 0;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(src, dst, amount);
+        return Objects.hash(id, src, dst, amount);
+    }
+
+    @Override
+    public String toString() {
+        return "FinancialTransaction{" +
+                "id=" + id +
+                ", src=" + src +
+                ", dst=" + dst +
+                ", amount=" + amount +
+                '}';
     }
 }
