@@ -1,5 +1,7 @@
 package su.bzz.springcourse;
 
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.stereotype.Service;
 import su.bzz.springcourse.model.FinancialTransaction;
 import su.bzz.springcourse.utils.TransactionMerger;
@@ -26,6 +28,25 @@ public class TransactionLogger {
 
     public void push(FinancialTransaction financialTransaction) {
         loggerFinancialTransaction.add(financialTransaction);
+    }
+
+    public DriverManagerDataSource dataSource () {
+        DriverManagerDataSource dataSource = new DriverManagerDataSource();
+        dataSource.setDriverClassName("org.postgresql.Driver");
+        dataSource.setUsername("postgres");
+        dataSource.setPassword("");
+        dataSource.setUrl("jdbc:postgresql://localhost:5432/billing_db");
+        return dataSource;
+    }
+
+    @PostConstruct
+    public void test() {
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource());
+        System.out.println("insert raw");
+
+        jdbcTemplate.update("INSERT INTO financial_transaction(src, dst, amount) " +
+                "values(?, ?, ?)", 100, 200, 10.5);
+
     }
 
     @PostConstruct
