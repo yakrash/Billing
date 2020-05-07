@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import su.bzz.springcourse.BillingAPIImpl;
-import su.bzz.springcourse.TransactionLogger;
+import su.bzz.springcourse.service.BillingAPIImpl;
+import su.bzz.springcourse.service.TransactionLogger;
 import su.bzz.springcourse.model.FinancialTransaction;
 
 import java.util.concurrent.BlockingQueue;

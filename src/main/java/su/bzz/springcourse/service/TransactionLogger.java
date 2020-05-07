@@ -1,5 +1,6 @@
-package su.bzz.springcourse;
+package su.bzz.springcourse.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.stereotype.Service;
@@ -8,6 +9,7 @@ import su.bzz.springcourse.utils.TransactionMerger;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import javax.sql.DataSource;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
@@ -30,18 +32,9 @@ public class TransactionLogger {
         loggerFinancialTransaction.add(financialTransaction);
     }
 
-    public DriverManagerDataSource dataSource () {
-        DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setDriverClassName("org.postgresql.Driver");
-        dataSource.setUsername("postgres");
-        dataSource.setPassword("");
-        dataSource.setUrl("jdbc:postgresql://localhost:5432/billing_db");
-        return dataSource;
-    }
-
-    @PostConstruct
-    public void test() {
-        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource());
+    @Autowired
+    public void setDataSource(DataSource dataSource) {
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
         System.out.println("insert raw");
 
         jdbcTemplate.update("INSERT INTO financial_transaction(src, dst, amount) " +
