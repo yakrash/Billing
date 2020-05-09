@@ -13,7 +13,7 @@ public class PostgresConfig {
 
     public class SpringJdbcConfig {
 
-        @Bean
+        //@Bean
         public DataSource postgresDataSource () {
             DriverManagerDataSource dataSource = new DriverManagerDataSource();
             dataSource.setDriverClassName("org.postgresql.Driver");
