@@ -39,17 +39,21 @@ public class TransactionLogger {
 
     @PostConstruct
     public void parserLoggerFT() {
+
         executorService.scheduleAtFixedRate(new Thread(() -> {
+            List<FinancialTransaction> tempMergedFinancialTransactions = new ArrayList<>();
             BlockingQueue<FinancialTransaction> tempFinancialTransaction = new LinkedBlockingQueue<>();
 
             loggerFinancialTransaction.drainTo(tempFinancialTransaction);
             System.out.println("В нашей заглушке: " + tempFinancialTransaction);
 
-            tempFinancialTransaction.drainTo(mergedFinancialTransactions);
-            mergedFinancialTransactions = TransactionMerger.merge(mergedFinancialTransactions);
-            System.out.println("transactionsMerger: " + mergedFinancialTransactions);
+            tempFinancialTransaction.drainTo(tempMergedFinancialTransactions);
+            tempMergedFinancialTransactions = TransactionMerger.merge(tempMergedFinancialTransactions);
+            System.out.println("TempFT: " + tempMergedFinancialTransactions);
 
-            jdbcFinancialTransactionDao.insert(mergedFinancialTransactions);
+            jdbcFinancialTransactionDao.insert(tempMergedFinancialTransactions);
+            mergedFinancialTransactions.addAll(tempMergedFinancialTransactions);
+            System.out.println("mergedFT" + mergedFinancialTransactions);
 
         }), 0, 8, TimeUnit.SECONDS);
     }
