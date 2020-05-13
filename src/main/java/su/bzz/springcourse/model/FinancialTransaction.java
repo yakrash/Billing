@@ -6,9 +6,6 @@ import javax.persistence.Id;
 import java.util.Objects;
 
 public class FinancialTransaction {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
 
     private int src;
     private int dst;
@@ -24,9 +21,7 @@ public class FinancialTransaction {
 
     }
 
-    public long getId() {
-        return id;
-    }
+
 
     public int getSrc() {
         return src;
@@ -57,22 +52,20 @@ public class FinancialTransaction {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         FinancialTransaction that = (FinancialTransaction) o;
-        return id == that.id &&
-                src == that.src &&
+        return src == that.src &&
                 dst == that.dst &&
                 Double.compare(that.amount, amount) == 0;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, src, dst, amount);
+        return Objects.hash(src, dst, amount);
     }
 
     @Override
     public String toString() {
         return "FinancialTransaction{" +
-                "id=" + id +
-                ", src=" + src +
+                "src=" + src +
                 ", dst=" + dst +
                 ", amount=" + amount +
                 '}';
