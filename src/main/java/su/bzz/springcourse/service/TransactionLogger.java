@@ -24,7 +24,7 @@ public class TransactionLogger {
     private final BlockingQueue<FinancialTransaction> loggerFinancialTransaction = new LinkedBlockingQueue<>();
     private final ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
     private List<FinancialTransaction> transactionsMerger = new ArrayList<>();
-
+    JdbcTemplate jdbcTemplate;
     public BlockingQueue<FinancialTransaction> getLoggerFinancialTransaction() {
         return loggerFinancialTransaction;
     }
@@ -33,14 +33,11 @@ public class TransactionLogger {
         loggerFinancialTransaction.add(financialTransaction);
     }
 
-   // @Autowired
+    @Autowired
     @Transactional
     public void setDataSource(DataSource dataSource) {
-        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
-        System.out.println("insert raw");
-
-        jdbcTemplate.update("INSERT INTO financial_transaction(src, dst, amount) " +
-                "values(?, ?, ?)", 100, 200, 10.5);
+        jdbcTemplate = new JdbcTemplate(dataSource);
+        System.out.println("insert dataSource");
 
     }
 
@@ -54,7 +51,10 @@ public class TransactionLogger {
             tempFinancialTransaction.drainTo(transactionsMerger);
             transactionsMerger = TransactionMerger.merge(transactionsMerger);
             System.out.println("transactionsMerger: " + transactionsMerger);
-
+            for (FinancialTransaction e : transactionsMerger) {
+                jdbcTemplate.update("INSERT INTO financial_transaction(src, dst, amount) " +
+                        "values(?, ?, ?)", e.getSrc(), e.getSrc(), e.getAmount());
+            }
         }), 0, 5, TimeUnit.SECONDS);
     }
 
