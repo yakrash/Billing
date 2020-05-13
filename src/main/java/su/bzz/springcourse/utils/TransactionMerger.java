@@ -9,7 +9,7 @@ import java.util.Map;
 
 public class TransactionMerger {
 
-    public static ArrayList<FinancialTransaction> merge(List<FinancialTransaction> transactionsMerger) {
+    public static List<FinancialTransaction> merge(List<FinancialTransaction> transactionsMerger) {
         final Map<String, FinancialTransaction> transactionsMergerMap = new HashMap<>();
 
         for (FinancialTransaction e : transactionsMerger) {
@@ -20,7 +20,6 @@ public class TransactionMerger {
             }
             transactionsMergerMap.put(key, e);
         }
-        ArrayList<FinancialTransaction> result = new ArrayList<>(transactionsMergerMap.values());
-        return result;
+        return new ArrayList<>(transactionsMergerMap.values());
     }
 }

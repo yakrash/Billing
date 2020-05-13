@@ -3,6 +3,7 @@ package su.bzz.springcourse.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import su.bzz.springcourse.model.FinancialTransaction;
 import su.bzz.springcourse.utils.TransactionMerger;
 
@@ -22,6 +23,7 @@ public class TransactionLogger {
 
     private final BlockingQueue<FinancialTransaction> loggerFinancialTransaction = new LinkedBlockingQueue<>();
     private final ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
+    private List<FinancialTransaction> transactionsMerger = new ArrayList<>();
 
     public BlockingQueue<FinancialTransaction> getLoggerFinancialTransaction() {
         return loggerFinancialTransaction;
@@ -31,7 +33,8 @@ public class TransactionLogger {
         loggerFinancialTransaction.add(financialTransaction);
     }
 
-    @Autowired
+   // @Autowired
+    @Transactional
     public void setDataSource(DataSource dataSource) {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
         System.out.println("insert raw");
@@ -44,14 +47,13 @@ public class TransactionLogger {
     @PostConstruct
     public void parserLoggerFT() {
         executorService.scheduleAtFixedRate(new Thread(() -> {
-            List<FinancialTransaction> transactionsMerger = new ArrayList<>();
             BlockingQueue<FinancialTransaction> tempFinancialTransaction = new LinkedBlockingQueue<>();
 
             loggerFinancialTransaction.drainTo(tempFinancialTransaction);
             System.out.println("В нашей заглушке: " + tempFinancialTransaction);
-
             tempFinancialTransaction.drainTo(transactionsMerger);
-            TransactionMerger.merge(transactionsMerger);
+            transactionsMerger = TransactionMerger.merge(transactionsMerger);
+            System.out.println("transactionsMerger: " + transactionsMerger);
 
         }), 0, 5, TimeUnit.SECONDS);
     }

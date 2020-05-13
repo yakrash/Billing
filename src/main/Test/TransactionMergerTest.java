@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TransactionMergerTest {
-    private ArrayList<FinancialTransaction> mergeList;
+    private List<FinancialTransaction> mergeList;
     private final List<FinancialTransaction> testList = new ArrayList<>();
 
     @Test
