@@ -9,10 +9,10 @@ import java.util.Map;
 
 public class TransactionMerger {
 
-    public static List<FinancialTransaction> merge(List<FinancialTransaction> transactionsMerger) {
+    public static List<FinancialTransaction> merge(List<FinancialTransaction> mergedFinancialTransactions) {
         final Map<String, FinancialTransaction> transactionsMergerMap = new HashMap<>();
 
-        for (FinancialTransaction e : transactionsMerger) {
+        for (FinancialTransaction e : mergedFinancialTransactions) {
             String key = e.getSrc() + ":" + e.getDst();
 
             if (transactionsMergerMap.containsKey(key)) {
