@@ -10,7 +10,7 @@ import javax.sql.DataSource;
 import java.util.List;
 
 @Repository
-public class JdbcFinancialTransactionDao implements FinancialTransactionDao {
+public class PostgresLoggerDAO implements FinancialTransactionDao {
     private JdbcTemplate jdbcTemplate;
 
     @Autowired

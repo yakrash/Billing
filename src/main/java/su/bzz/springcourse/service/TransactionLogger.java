@@ -2,7 +2,7 @@ package su.bzz.springcourse.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import su.bzz.springcourse.dao.JdbcFinancialTransactionDao;
+import su.bzz.springcourse.dao.PostgresLoggerDAO;
 import su.bzz.springcourse.model.FinancialTransaction;
 import su.bzz.springcourse.utils.TransactionMerger;
 
@@ -22,11 +22,11 @@ public class TransactionLogger {
     private final BlockingQueue<FinancialTransaction> loggerFinancialTransaction = new LinkedBlockingQueue<>();
     private final ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
     private List<FinancialTransaction> mergedFinancialTransactions = new ArrayList<>();
-    JdbcFinancialTransactionDao jdbcFinancialTransactionDao;
+    private PostgresLoggerDAO postgresLoggerDAO;
 
     @Autowired
-    public TransactionLogger(JdbcFinancialTransactionDao jdbcFinancialTransactionDao) {
-        this.jdbcFinancialTransactionDao = jdbcFinancialTransactionDao;
+    public TransactionLogger(PostgresLoggerDAO postgresLoggerDAO) {
+        this.postgresLoggerDAO = postgresLoggerDAO;
     }
 
     public BlockingQueue<FinancialTransaction> getLoggerFinancialTransaction() {
@@ -51,7 +51,7 @@ public class TransactionLogger {
             tempMergedFinancialTransactions = TransactionMerger.merge(tempMergedFinancialTransactions);
             System.out.println("TempFT: " + tempMergedFinancialTransactions);
 
-            jdbcFinancialTransactionDao.insert(tempMergedFinancialTransactions);
+            postgresLoggerDAO.insert(tempMergedFinancialTransactions);
             mergedFinancialTransactions.addAll(tempMergedFinancialTransactions);
             System.out.println("mergedFT" + mergedFinancialTransactions);
 
