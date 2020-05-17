@@ -3,6 +3,7 @@ package su.bzz.springcourse.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 import javax.sql.DataSource;
@@ -19,5 +20,10 @@ public class PostgresConfig {
         dataSource.setPassword("postgres");
         dataSource.setUrl("jdbc:postgresql://localhost:5432/billing_db");
         return dataSource;
+    }
+
+    @Bean
+    public JdbcTemplate jdbcTemplate() {
+        return new JdbcTemplate(postgresDataSource());
     }
 }

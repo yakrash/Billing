@@ -23,9 +23,9 @@ public class TransactionLogger {
 
     private final BlockingQueue<FinancialTransaction> loggerFinancialTransaction = new LinkedBlockingQueue<>();
     private final ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
-    private final List<FinancialTransaction> mergedFinancialTransactions = new ArrayList<>();
     private final PostgresLoggerDAO postgresLoggerDAO;
     private static final Logger LOGGER = LoggerFactory.getLogger(TransactionLogger.class);
+
     @Autowired
     public TransactionLogger(PostgresLoggerDAO postgresLoggerDAO) {
         this.postgresLoggerDAO = postgresLoggerDAO;
@@ -41,6 +41,7 @@ public class TransactionLogger {
 
     @PostConstruct
     public void parserLoggerFT() {
+        final List<FinancialTransaction> mergedFinancialTransactions = new ArrayList<>();
 
         executorService.scheduleAtFixedRate(new Thread(() -> {
             List<FinancialTransaction> tempFinancialTransaction = new ArrayList<>();
