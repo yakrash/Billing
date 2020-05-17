@@ -4,6 +4,6 @@ import su.bzz.springcourse.model.FinancialTransaction;
 
 import java.util.List;
 
-public interface FinancialTransactionDao {
+public interface FinancialTransactionDAO {
     public void insert(List<FinancialTransaction> financialTransactionList);
 }

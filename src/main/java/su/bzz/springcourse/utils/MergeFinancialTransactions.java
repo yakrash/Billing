@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class TransactionMerger {
+public class MergeFinancialTransactions {
 
     public static List<FinancialTransaction> merge(List<FinancialTransaction> mergedFinancialTransactions) {
         final Map<String, FinancialTransaction> transactionsMergerMap = new HashMap<>();

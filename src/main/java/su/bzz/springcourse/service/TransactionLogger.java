@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import su.bzz.springcourse.dao.PostgresLoggerDAO;
 import su.bzz.springcourse.model.FinancialTransaction;
-import su.bzz.springcourse.utils.TransactionMerger;
+import su.bzz.springcourse.utils.MergeFinancialTransactions;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -46,7 +46,7 @@ public class TransactionLogger {
             loggerFinancialTransaction.drainTo(tempFinancialTransaction);
             System.out.println("В нашей заглушке: " + tempFinancialTransaction);
 
-            tempFinancialTransaction = TransactionMerger.merge(tempFinancialTransaction);
+            tempFinancialTransaction = MergeFinancialTransactions.merge(tempFinancialTransaction);
             System.out.println("TempFT: " + tempFinancialTransaction);
 
             postgresLoggerDAO.insert(tempFinancialTransaction);
