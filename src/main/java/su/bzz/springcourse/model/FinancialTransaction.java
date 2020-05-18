@@ -1,8 +1,12 @@
-package su.bzz.springcourse;
+package su.bzz.springcourse.model;
 
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import java.util.Objects;
 
 public class FinancialTransaction {
+
     private int src;
     private int dst;
     private double amount;
@@ -13,18 +17,11 @@ public class FinancialTransaction {
         this.amount = amount;
     }
 
-    public FinancialTransaction() {
+    public FinancialTransaction(){
 
     }
 
-    @Override
-    public String toString() {
-        return "FinancialTransaction{" +
-                "src=" + src +
-                ", dst=" + dst +
-                ", amount=" + amount +
-                '}';
-    }
+
 
     public int getSrc() {
         return src;
@@ -63,5 +60,14 @@ public class FinancialTransaction {
     @Override
     public int hashCode() {
         return Objects.hash(src, dst, amount);
+    }
+
+    @Override
+    public String toString() {
+        return "FinancialTransaction{" +
+                "src=" + src +
+                ", dst=" + dst +
+                ", amount=" + amount +
+                '}';
     }
 }

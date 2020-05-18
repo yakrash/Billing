@@ -1,7 +1,7 @@
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
-import su.bzz.springcourse.FinancialTransaction;
-import su.bzz.springcourse.TransactionValidator;
+import su.bzz.springcourse.model.FinancialTransaction;
+import su.bzz.springcourse.utils.TransactionValidator;
 
 
 public class TransactionValidatorTest {

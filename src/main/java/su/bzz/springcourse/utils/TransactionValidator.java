@@ -1,4 +1,6 @@
-package su.bzz.springcourse;
+package su.bzz.springcourse.utils;
+
+import su.bzz.springcourse.model.FinancialTransaction;
 
 import java.util.logging.Logger;
 

@@ -1,18 +1,18 @@
 package su.bzz.springcourse.utils;
 
-import su.bzz.springcourse.FinancialTransaction;
+import su.bzz.springcourse.model.FinancialTransaction;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class TransactionMerger {
+public class MergeFinancialTransactions {
 
-    public static ArrayList<FinancialTransaction> merge(List<FinancialTransaction> transactionsMerger) {
+    public static List<FinancialTransaction> merge(List<FinancialTransaction> mergedFinancialTransactions) {
         final Map<String, FinancialTransaction> transactionsMergerMap = new HashMap<>();
 
-        for (FinancialTransaction e : transactionsMerger) {
+        for (FinancialTransaction e : mergedFinancialTransactions) {
             String key = e.getSrc() + ":" + e.getDst();
 
             if (transactionsMergerMap.containsKey(key)) {
@@ -20,7 +20,6 @@ public class TransactionMerger {
             }
             transactionsMergerMap.put(key, e);
         }
-        ArrayList<FinancialTransaction> result = new ArrayList<>(transactionsMergerMap.values());
-        return result;
+        return new ArrayList<>(transactionsMergerMap.values());
     }
 }
