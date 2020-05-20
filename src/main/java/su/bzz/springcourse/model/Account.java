@@ -3,10 +3,10 @@ package su.bzz.springcourse.model;
 import java.util.Objects;
 
 public class Account {
-    private double amount;
     private int id;
+    private double amount;
 
-    public Account(double amount, int id) {
+    public Account(int id, double amount) {
         this.amount = amount;
         this.id = id;
     }
