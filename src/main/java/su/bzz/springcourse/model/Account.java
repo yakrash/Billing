@@ -3,10 +3,10 @@ package su.bzz.springcourse.model;
 import java.util.Objects;
 
 public class Account {
-    private int id;
+    private long id;
     private double amount;
 
-    public Account(int id, double amount) {
+    public Account(long id, double amount) {
         this.amount = amount;
         this.id = id;
     }
@@ -19,11 +19,11 @@ public class Account {
         this.amount = amount;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
