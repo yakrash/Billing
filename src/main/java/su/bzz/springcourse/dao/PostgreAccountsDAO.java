@@ -6,11 +6,11 @@ import org.springframework.stereotype.Repository;
 import su.bzz.springcourse.model.Account;
 
 @Repository
-public class AccountsDAOImp implements AccountsDAO {
+public class PostgreAccountsDAO implements AccountsDAO {
     private final JdbcTemplate jdbcTemplate;
 
     @Autowired
-    public AccountsDAOImp(JdbcTemplate jdbcTemplate) {
+    public PostgreAccountsDAO(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 

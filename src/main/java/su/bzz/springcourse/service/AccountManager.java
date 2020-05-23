@@ -4,8 +4,9 @@ package su.bzz.springcourse.service;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import su.bzz.springcourse.dao.AccountsDAOImp;
+import su.bzz.springcourse.dao.PostgreAccountsDAO;
 import su.bzz.springcourse.model.Account;
 
 import java.util.concurrent.ExecutionException;
@@ -13,14 +14,20 @@ import java.util.concurrent.TimeUnit;
 
 @Service
 public class AccountManager {
-    private final AccountsDAOImp accountsDAOImp;
+    private final PostgreAccountsDAO postgreAccountsDAO;
 
-    public AccountManager(AccountsDAOImp accountsDAOImp) {
-        this.accountsDAOImp = accountsDAOImp;
+    @Value("${accountManager.expireAfterAccessDuration}")
+    private int expireAfterAccessDuration;
+
+    @Value("${accountManager.expireAfterAccessTimeUnit}")
+    private String expireAfterAccessTimeUnit;
+
+    public AccountManager(PostgreAccountsDAO postgreAccountsDAO) {
+        this.postgreAccountsDAO = postgreAccountsDAO;
     }
 
     private final LoadingCache<Long, Account> accounts = CacheBuilder.newBuilder()
-            .expireAfterAccess(10, TimeUnit.MINUTES)
+            .expireAfterAccess(expireAfterAccessDuration, TimeUnit.valueOf(expireAfterAccessTimeUnit))
             .maximumSize(100)
             .build(new CacheLoader<Long, Account>() {
                 @Override
@@ -30,11 +37,11 @@ public class AccountManager {
             });
 
     public Account getAccountById(long id) throws ExecutionException {
-        return accountsDAOImp.get(id);
+        return postgreAccountsDAO.get(id);
     }
 
     public void createAccount(double amount) {
-        long createId = accountsDAOImp.create(amount);
+        long createId = postgreAccountsDAO.create(amount);
         accounts.put(createId, new Account(createId, amount));
     }
 
@@ -44,16 +51,9 @@ public class AccountManager {
     }
 
     public void changeAmount(long id, double amount) throws ExecutionException {
-        getAccountById(id).setAmount(getAccountById(id).getAmount() + amount);
+        Account acc = getAccountById(id);
+        acc.setAmount(acc.getAmount() + amount);
     }
 
-//    @PostConstruct
-//    public void testCode() throws ExecutionException {
-//        createAccount(2000);
-//        System.out.println(accounts.get(2L));
-//        modify(1, 500);
-//        System.out.println(accounts.get(1L));
-//
-//    }
 
 }
