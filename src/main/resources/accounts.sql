@@ -1,4 +1,5 @@
 CREATE TABLE accounts (
     id serial not null,
-    amount numeric not null
+    debit numeric not null,
+    credit numeric not null
 );
