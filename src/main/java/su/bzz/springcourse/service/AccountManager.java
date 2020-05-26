@@ -8,7 +8,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import su.bzz.springcourse.dao.PostgreAccountsDAO;
 import su.bzz.springcourse.model.Account;
+import su.bzz.springcourse.model.FinancialTransaction;
 
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -38,6 +40,18 @@ public class AccountManager {
     public void createAccount(double debit, double credit) {
         long createId = postgreAccountsDAO.create(debit, credit);
         accounts.put(createId, new Account(createId, debit, credit));
+    }
+
+    public void modify(FinancialTransaction financialTransaction) throws ExecutionException {
+        Account src = accounts.get(financialTransaction.getSrc());
+        Account dst = accounts.get(financialTransaction.getDst());
+        double amount = financialTransaction.getAmount();
+
+        src.setCredit(src.getCredit() + amount);
+        dst.setDebit(dst.getDebit() + amount);
+
+        accounts.put(src.getId(), src);
+        accounts.put(dst.getId(), dst);
     }
 
 
