@@ -19,11 +19,11 @@ public class AccountManager {
     @Value("${accountManager.expireAfterAccessDuration}")
     private int expireAfterAccessDuration;
 
-    @Value("${accountManager.expireAfterAccessTimeUnit}")
-    private String expireAfterAccessTimeUnit;
+//    @Value("${accountManager.expireAfterAccessTimeUnit}")
+//    private TimeUnit expireAfterAccessTimeUnit;
 
     private final LoadingCache<Long, Account> accounts = CacheBuilder.newBuilder()
-            .expireAfterAccess(expireAfterAccessDuration, TimeUnit.valueOf(expireAfterAccessTimeUnit))
+            .expireAfterAccess(expireAfterAccessDuration, TimeUnit.MINUTES)
             .maximumSize(100)
             .build(new CacheLoader<Long, Account>() {
                 @Override
