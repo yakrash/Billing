@@ -1,29 +1,25 @@
 package su.bzz.springcourse.model;
 
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import java.util.Objects;
 
 public class FinancialTransaction {
 
-    private int src;
-    private int dst;
+    private long src;
+    private long dst;
     private double amount;
 
-    public FinancialTransaction(int src, int dst, double amount) {
+    public FinancialTransaction(long src, long dst, double amount) {
         this.src = src;
         this.dst = dst;
         this.amount = amount;
     }
 
-    public FinancialTransaction(){
+    public FinancialTransaction() {
 
     }
 
 
-
-    public int getSrc() {
+    public long getSrc() {
         return src;
     }
 
@@ -31,7 +27,7 @@ public class FinancialTransaction {
         this.src = src;
     }
 
-    public int getDst() {
+    public long getDst() {
         return dst;
     }
 
