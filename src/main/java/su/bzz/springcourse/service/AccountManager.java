@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import su.bzz.springcourse.dao.PostgreAccountsDAO;
 import su.bzz.springcourse.model.Account;
 
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -36,9 +35,9 @@ public class AccountManager {
         this.postgreAccountsDAO = postgreAccountsDAO;
     }
 
-    public void createAccount(double amount) {
-        long createId = postgreAccountsDAO.create(amount);
-        accounts.put(createId, new Account(createId, amount));
+    public void createAccount(double debit, double credit) {
+        long createId = postgreAccountsDAO.create(debit, credit);
+        accounts.put(createId, new Account(createId, debit, credit));
     }
 
 
