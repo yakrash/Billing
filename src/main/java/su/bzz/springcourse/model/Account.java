@@ -4,19 +4,17 @@ import java.util.Objects;
 
 public class Account {
     private long id;
-    private double amount;
+    private double debit;
+    private double credit;
 
-    public Account(long id, double amount) {
-        this.amount = amount;
+    public Account(long id, double debit, double credit) {
         this.id = id;
+        this.debit = debit;
+        this.credit = credit;
     }
 
-    public double getAmount() {
-        return amount;
-    }
+    public Account() {
 
-    public void setAmount(double amount) {
-        this.amount = amount;
     }
 
     public long getId() {
@@ -27,25 +25,43 @@ public class Account {
         this.id = id;
     }
 
+    public double getDebit() {
+        return debit;
+    }
+
+    public void setDebit(double debit) {
+        this.debit = debit;
+    }
+
+    public double getCredit() {
+        return credit;
+    }
+
+    public void setCredit(double credit) {
+        this.credit = credit;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Account account = (Account) o;
-        return Double.compare(account.amount, amount) == 0 &&
-                id == account.id;
+        return id == account.id &&
+                Double.compare(account.debit, debit) == 0 &&
+                Double.compare(account.credit, credit) == 0;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(amount, id);
+        return Objects.hash(id, debit, credit);
     }
 
     @Override
     public String toString() {
         return "Account{" +
-                "amount=" + amount +
-                ", id=" + id +
+                "id=" + id +
+                ", debit=" + debit +
+                ", credit=" + credit +
                 '}';
     }
 }

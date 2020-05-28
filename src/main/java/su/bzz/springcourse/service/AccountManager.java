@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import su.bzz.springcourse.dao.PostgreAccountsDAO;
 import su.bzz.springcourse.model.Account;
+import su.bzz.springcourse.model.FinancialTransaction;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -19,11 +20,12 @@ public class AccountManager {
     @Value("${accountManager.expireAfterAccessDuration}")
     private int expireAfterAccessDuration;
 
-    @Value("${accountManager.expireAfterAccessTimeUnit}")
-    private String expireAfterAccessTimeUnit;
+
+//    @Value("${accountManager.expireAfterAccessTimeUnit}")
+//    private TimeUnit expireAfterAccessTimeUnit;
 
     private final LoadingCache<Long, Account> accounts = CacheBuilder.newBuilder()
-            .expireAfterAccess(expireAfterAccessDuration, TimeUnit.valueOf(expireAfterAccessTimeUnit))
+            .expireAfterAccess(expireAfterAccessDuration, TimeUnit.MINUTES)
             .maximumSize(100)
             .build(new CacheLoader<Long, Account>() {
                 @Override
@@ -36,9 +38,21 @@ public class AccountManager {
         this.postgreAccountsDAO = postgreAccountsDAO;
     }
 
-    public void createAccount(double amount) {
-        long createId = postgreAccountsDAO.create(amount);
-        accounts.put(createId, new Account(createId, amount));
+    public void createAccount(double debit, double credit) {
+        long createId = postgreAccountsDAO.create(debit, credit);
+        accounts.put(createId, new Account(createId, debit, credit));
+    }
+
+    public void modify(FinancialTransaction financialTransaction) throws ExecutionException {
+        Account src = accounts.get(financialTransaction.getSrc());
+        Account dst = accounts.get(financialTransaction.getDst());
+        double amount = financialTransaction.getAmount();
+
+        src.setCredit(src.getCredit() + amount);
+        dst.setDebit(dst.getDebit() + amount);
+
+        accounts.put(src.getId(), src);
+        accounts.put(dst.getId(), dst);
     }
 
 
