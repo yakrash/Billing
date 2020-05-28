@@ -18,15 +18,12 @@ public class PostgreAccountsDAO implements AccountsDAO {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    private RowMapper<Account> rowMapper = new RowMapper<Account>() {
-        @Override
-        public Account mapRow(ResultSet rs, int i) throws SQLException {
-            Account account = new Account();
-            account.setId(rs.getLong("id"));
-            account.setDebit(rs.getDouble("debit"));
-            account.setCredit(rs.getDouble("credit"));
-            return account;
-        }
+    private final RowMapper<Account> rowMapper = (rs, i) -> {
+        Account account = new Account();
+        account.setId(rs.getLong("id"));
+        account.setDebit(rs.getDouble("debit"));
+        account.setCredit(rs.getDouble("credit"));
+        return account;
     };
 
     @Override
