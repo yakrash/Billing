@@ -10,7 +10,6 @@ import su.bzz.springcourse.utils.MergeFinancialTransactions;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
-import java.security.AccessControlContext;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
@@ -60,14 +59,13 @@ public class TransactionLogger {
             postgresLoggerDAO.insert(tempFinancialTransaction);
 //            mergedFinancialTransactions.addAll(tempFinancialTransaction);
 //            LOGGER.info("3. MergedFT" + mergedFinancialTransactions);
-            for (FinancialTransaction ft:tempFinancialTransaction) {
-                try {
+            try {
+                for (FinancialTransaction ft : tempFinancialTransaction) {
                     accountManager.modify(ft);
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
                 }
+            } catch (ExecutionException e) {
+                LOGGER.warn(e.toString());
             }
-
 
         }), 0, 8, TimeUnit.SECONDS);
     }
