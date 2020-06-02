@@ -48,7 +48,7 @@ public class UpdateManager {
 
             List<Account> accountList = convertFinancialTransactionToAccountList(tempFinancialTransactionList);
             LOGGER.info("3. accountList: " + accountList);
-            addToDB(accountList);
+            addToDBFromList(accountList);
         }), 0, 15, TimeUnit.SECONDS);
     }
 
@@ -80,7 +80,7 @@ public class UpdateManager {
         return new ArrayList<>(accountMap.values());
     }
 
-    private void addToDB(List<Account> accountList) {
+    private void addToDBFromList(List<Account> accountList) {
         for (Account account : accountList) {
             Account accountFromDB = postgreAccountsDAO.get(account.getId());
             account.setDebit(account.getDebit() + accountFromDB.getDebit());
