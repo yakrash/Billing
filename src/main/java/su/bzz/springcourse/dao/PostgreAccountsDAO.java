@@ -2,12 +2,13 @@ package su.bzz.springcourse.dao;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementSetter;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import su.bzz.springcourse.model.Account;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.util.List;
 
 @Repository
 public class PostgreAccountsDAO implements AccountsDAO {
@@ -38,4 +39,21 @@ public class PostgreAccountsDAO implements AccountsDAO {
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
     }
 
+    @Override
+    @Transactional
+    public void modify(List<Account> accountList) {
+        String sql = "UPDATE ACCOUNTS SET debit=?, credit=? WHERE id=?";
+        for(Account e : accountList) {
+        jdbcTemplate.update(sql, getPreparedStatementSetter(e));
+        }
+    }
+
+    private PreparedStatementSetter getPreparedStatementSetter(final Account account) {
+        return ps -> {
+            int i = 0;
+            ps.setDouble(++i, account.getDebit());
+            ps.setDouble(++i, account.getCredit());
+            ps.setLong(++i, account.getId());
+        };
+    }
 }
