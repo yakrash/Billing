@@ -43,11 +43,8 @@ public class UpdateManager {
             tempBlockingQueueFinancialTransaction.drainTo(tempFinancialTransactionList);
             LOGGER.info("1. BeforeMerge: " + tempFinancialTransactionList);
 
-            tempFinancialTransactionList = MergeFinancialTransactions.merge(tempFinancialTransactionList);
-            LOGGER.info("2. AfterMerge: " + tempFinancialTransactionList);
-
             List<Account> accountList = convertFinancialTransactionToAccountList(tempFinancialTransactionList);
-            LOGGER.info("3. accountList: " + accountList);
+            LOGGER.info("2. accountList: " + accountList);
             addToDBFromList(accountList);
         }), 0, 15, TimeUnit.SECONDS);
     }
