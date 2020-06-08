@@ -50,10 +50,10 @@ public class TransactionLogger {
             List<FinancialTransaction> tempFinancialTransaction = new ArrayList<>();
 
             loggerFinancialTransaction.drainTo(tempFinancialTransaction);
-//            LOGGER.info("1. TempFT: " + tempFinancialTransaction);
+            LOGGER.info("1. TempFT: " + tempFinancialTransaction);
 
             tempFinancialTransaction = MergeFinancialTransactions.merge(tempFinancialTransaction);
-//            LOGGER.info("2. MergeTempFT: " + tempFinancialTransaction);
+            LOGGER.info("2. MergeTempFT: " + tempFinancialTransaction);
 
             postgresLoggerDAO.insert(tempFinancialTransaction);
 
@@ -67,7 +67,7 @@ public class TransactionLogger {
 
             updateManager.push(tempFinancialTransaction);
 
-        }), 0, 10, TimeUnit.SECONDS);
+        }), 0, 3, TimeUnit.SECONDS);
     }
 
     @PreDestroy

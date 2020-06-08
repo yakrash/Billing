@@ -31,6 +31,7 @@ public class PostgreAccountsDAO implements AccountsDAO {
         return jdbcTemplate.queryForObject(sql, Long.class, debit, credit);
     }
 
+    @Transactional
     @Override
     public Account get(long id) {
         String sql = "SELECT * FROM ACCOUNTS WHERE ID=?";
