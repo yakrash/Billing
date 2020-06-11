@@ -7,6 +7,9 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import su.bzz.springcourse.model.Account;
+import su.bzz.springcourse.model.FinancialTransaction;
+
+import java.util.List;
 
 @Repository
 public class PostgreAccountsDAO implements AccountsDAO {
@@ -40,11 +43,21 @@ public class PostgreAccountsDAO implements AccountsDAO {
 
     @Override
     @Transactional
-    public void modify(Account account) {
+    public void modify(List<FinancialTransaction> financialTransactionsList) {
         String sql = "UPDATE ACCOUNTS SET debit=?, credit=? WHERE id=?";
 
-        jdbcTemplate.update(sql, getPreparedStatementSetter(account));
+        for (FinancialTransaction e : financialTransactionsList) {
+            Account accountDstFromDB = get(e.getDst());
+            Account accountSrcFromDB = get(e.getSrc());
+
+            accountSrcFromDB.setDebit(accountSrcFromDB.getDebit() + e.getAmount());
+            accountDstFromDB.setCredit(accountDstFromDB.getCredit() + e.getAmount());
+
+            jdbcTemplate.update(sql, getPreparedStatementSetter(accountDstFromDB));
+            jdbcTemplate.update(sql, getPreparedStatementSetter(accountSrcFromDB));
+        }
     }
+
 
     private PreparedStatementSetter getPreparedStatementSetter(final Account account) {
         return ps -> {
