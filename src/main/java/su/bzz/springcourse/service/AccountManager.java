@@ -4,7 +4,10 @@ package su.bzz.springcourse.service;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import su.bzz.springcourse.dao.PostgreAccountsDAO;
 import su.bzz.springcourse.model.Account;
@@ -16,6 +19,7 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class AccountManager {
     private final PostgreAccountsDAO postgreAccountsDAO;
+    private static final Logger LOGGER = LoggerFactory.getLogger(TransactionLogger.class);
 
     @Value("${accountManager.expireAfterAccessDuration}")
     private int expireAfterAccessDuration;
@@ -40,15 +44,20 @@ public class AccountManager {
     }
 
     public void modify(FinancialTransaction financialTransaction) throws ExecutionException {
-        Account src = accounts.get(financialTransaction.getSrc());
-        Account dst = accounts.get(financialTransaction.getDst());
-        double amount = financialTransaction.getAmount();
+        try {
+            Account src = accounts.get(financialTransaction.getSrc());
+            Account dst = accounts.get(financialTransaction.getDst());
+            double amount = financialTransaction.getAmount();
 
-        src.setCredit(src.getCredit() + amount);
-        dst.setDebit(dst.getDebit() + amount);
+            src.setCredit(src.getCredit() + amount);
+            dst.setDebit(dst.getDebit() + amount);
 
-        accounts.put(src.getId(), src);
-        accounts.put(dst.getId(), dst);
+            accounts.put(src.getId(), src);
+            accounts.put(dst.getId(), dst);
+        }catch(Exception e) {
+            LOGGER.warn(e.toString());
+
+        }
     }
 
 

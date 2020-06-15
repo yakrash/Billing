@@ -27,14 +27,15 @@ public class TransactionLogger {
     private final PostgresLoggerDAO postgresLoggerDAO;
     private static final Logger LOGGER = LoggerFactory.getLogger(TransactionLogger.class);
     private final AccountManager accountManager;
+    private final UpdateManager updateManager;
 
-    public TransactionLogger(PostgresLoggerDAO postgresLoggerDAO, AccountManager accountManager) {
+    public TransactionLogger(PostgresLoggerDAO postgresLoggerDAO, AccountManager accountManager, UpdateManager updateManager) {
         this.postgresLoggerDAO = postgresLoggerDAO;
         this.accountManager = accountManager;
+        this.updateManager = updateManager;
     }
 
     @Autowired
-
     public BlockingQueue<FinancialTransaction> getLoggerFinancialTransaction() {
         return loggerFinancialTransaction;
     }
@@ -45,8 +46,6 @@ public class TransactionLogger {
 
     @PostConstruct
     public void parserLoggerFT() {
-        final List<FinancialTransaction> mergedFinancialTransactions = new ArrayList<>();
-
         executorService.scheduleAtFixedRate(new Thread(() -> {
             List<FinancialTransaction> tempFinancialTransaction = new ArrayList<>();
 
@@ -57,8 +56,7 @@ public class TransactionLogger {
             LOGGER.info("2. MergeTempFT: " + tempFinancialTransaction);
 
             postgresLoggerDAO.insert(tempFinancialTransaction);
-//            mergedFinancialTransactions.addAll(tempFinancialTransaction);
-//            LOGGER.info("3. MergedFT" + mergedFinancialTransactions);
+
             try {
                 for (FinancialTransaction ft : tempFinancialTransaction) {
                     accountManager.modify(ft);
@@ -67,7 +65,9 @@ public class TransactionLogger {
                 LOGGER.warn(e.toString());
             }
 
-        }), 0, 8, TimeUnit.SECONDS);
+            updateManager.push(tempFinancialTransaction);
+
+        }), 0, 3, TimeUnit.SECONDS);
     }
 
     @PreDestroy
