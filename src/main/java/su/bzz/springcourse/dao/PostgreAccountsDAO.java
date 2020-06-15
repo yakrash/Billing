@@ -2,15 +2,12 @@ package su.bzz.springcourse.dao;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.PreparedStatementSetter;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import su.bzz.springcourse.model.Account;
 import su.bzz.springcourse.model.FinancialTransaction;
 
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.util.List;
 
 @Repository
@@ -55,7 +52,13 @@ public class PostgreAccountsDAO implements AccountsDAO {
             accountSrcFromDB.setDebit(accountSrcFromDB.getDebit() + e.getAmount());
             accountDstFromDB.setCredit(accountDstFromDB.getCredit() + e.getAmount());
 
-            jdbcTemplate.update(sql, getPreparedStatementSetter(accountDstFromDB));
+            jdbcTemplate.update(sql, (ps) -> {
+                int i = 0;
+                ps.setDouble(++i, accountDstFromDB.getDebit());
+                ps.setDouble(++i, accountDstFromDB.getCredit());
+                ps.setLong(++i, accountDstFromDB.getId());
+            });
+
             jdbcTemplate.update(sql, (ps) -> {
                 int i = 0;
                 ps.setDouble(++i, accountSrcFromDB.getDebit());
@@ -63,18 +66,5 @@ public class PostgreAccountsDAO implements AccountsDAO {
                 ps.setLong(++i, accountSrcFromDB.getId());
             });
         }
-    }
-
-
-    private PreparedStatementSetter getPreparedStatementSetter(final Account account) {
-        return new PreparedStatementSetter() {
-            @Override
-            public void setValues(PreparedStatement ps) throws SQLException {
-                int i = 0;
-                ps.setDouble(++i, account.getDebit());
-                ps.setDouble(++i, account.getCredit());
-                ps.setLong(++i, account.getId());
-            }
-        };
     }
 }
