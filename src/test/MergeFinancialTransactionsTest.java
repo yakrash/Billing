@@ -30,6 +30,4 @@ public class MergeFinancialTransactionsTest {
         Assert.assertEquals(mergeList.get(2).getAmount(), 70.0, 1e-9);
         Assert.assertEquals(mergeList.get(3).getAmount(), 10.0, 1e-9);
     }
-
-
 }

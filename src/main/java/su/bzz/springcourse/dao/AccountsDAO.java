@@ -11,5 +11,4 @@ public interface AccountsDAO {
     Account get(long id);
 
     void modify(List<FinancialTransaction> financialTransactionsList);
-
 }

@@ -56,5 +56,4 @@ public class TransactionValidatorTest {
         boolean check = transactionValidator.validator(financialTransaction);
         Assert.assertTrue(check);
     }
-
 }

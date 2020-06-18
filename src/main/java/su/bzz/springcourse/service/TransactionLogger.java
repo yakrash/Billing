@@ -22,10 +22,10 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class TransactionLogger {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(TransactionLogger.class);
     private final BlockingQueue<FinancialTransaction> loggerFinancialTransaction = new LinkedBlockingQueue<>();
     private final ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
     private final PostgresLoggerDAO postgresLoggerDAO;
-    private static final Logger LOGGER = LoggerFactory.getLogger(TransactionLogger.class);
     private final AccountManager accountManager;
     private final UpdateManager updateManager;
 
@@ -74,5 +74,4 @@ public class TransactionLogger {
     public void shutDownExecutorService() {
         executorService.shutdown();
     }
-
 }

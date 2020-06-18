@@ -13,12 +13,6 @@ import java.util.List;
 @Repository
 public class PostgreAccountsDAO implements AccountsDAO {
     private final JdbcTemplate jdbcTemplate;
-
-    @Autowired
-    public PostgreAccountsDAO(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
-
     private final RowMapper<Account> rowMapper = (rs, i) -> {
         Account account = new Account();
         account.setId(rs.getLong("id"));
@@ -26,6 +20,11 @@ public class PostgreAccountsDAO implements AccountsDAO {
         account.setCredit(rs.getDouble("credit"));
         return account;
     };
+
+    @Autowired
+    public PostgreAccountsDAO(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
 
     @Override
     public long create(double debit, double credit) {

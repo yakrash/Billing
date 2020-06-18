@@ -54,5 +54,4 @@ public class PostgresLoggerDAOTest {
         int count = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM financial_transaction", Integer.class);
         assertEquals(1, count);
     }
-
 }

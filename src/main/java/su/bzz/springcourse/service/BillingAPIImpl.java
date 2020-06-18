@@ -2,8 +2,8 @@ package su.bzz.springcourse.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import su.bzz.springcourse.utils.TransactionValidator;
 import su.bzz.springcourse.model.FinancialTransaction;
+import su.bzz.springcourse.utils.TransactionValidator;
 
 @Service
 public class BillingAPIImpl implements BillingAPI {
