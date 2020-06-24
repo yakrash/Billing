@@ -16,12 +16,10 @@ import su.bzz.springcourse.service.TransactionLogger;
 public class TransactionController {
 
     private final BillingAPIImpl billingAPI;
-    private final TransactionLogger transactionLogger;
 
     @Autowired
-    public TransactionController(BillingAPIImpl billingAPI, TransactionLogger transactionLogger) {
+    public TransactionController(BillingAPIImpl billingAPI) {
         this.billingAPI = billingAPI;
-        this.transactionLogger = transactionLogger;
     }
 
     @PostMapping("/transfer")
