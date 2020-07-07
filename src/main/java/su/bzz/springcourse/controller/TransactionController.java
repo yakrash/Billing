@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import su.bzz.springcourse.model.FinancialTransaction;
 import su.bzz.springcourse.service.BillingAPIImpl;
-import su.bzz.springcourse.service.TransactionLogger;
 
 @RestController
 @RequestMapping("/api")
