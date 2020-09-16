@@ -29,15 +29,11 @@ public class TransactionLogger {
     private final AccountManager accountManager;
     private final UpdateManager updateManager;
 
+    @Autowired
     public TransactionLogger(PostgresLoggerDAO postgresLoggerDAO, AccountManager accountManager, UpdateManager updateManager) {
         this.postgresLoggerDAO = postgresLoggerDAO;
         this.accountManager = accountManager;
         this.updateManager = updateManager;
-    }
-
-    @Autowired
-    public BlockingQueue<FinancialTransaction> getLoggerFinancialTransaction() {
-        return loggerFinancialTransaction;
     }
 
     public void push(FinancialTransaction financialTransaction) {

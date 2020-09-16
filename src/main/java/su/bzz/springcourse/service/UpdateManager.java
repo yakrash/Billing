@@ -2,6 +2,7 @@ package su.bzz.springcourse.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import su.bzz.springcourse.dao.PostgreAccountsDAO;
 import su.bzz.springcourse.model.FinancialTransaction;
@@ -22,6 +23,7 @@ public class UpdateManager {
     private final ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
     private final PostgreAccountsDAO postgreAccountsDAO;
 
+    @Autowired
     public UpdateManager(PostgreAccountsDAO postgreAccountsDAO) {
         this.postgreAccountsDAO = postgreAccountsDAO;
     }
@@ -33,15 +35,12 @@ public class UpdateManager {
     @PostConstruct
     public void addToDB() {
         executorService.scheduleAtFixedRate(new Thread(() -> {
-            long timeStart = System.currentTimeMillis();
             List<FinancialTransaction> tempFinancialTransactionList = new ArrayList<>();
 
             tempBlockingQueueFinancialTransaction.drainTo(tempFinancialTransactionList);
-            LOGGER.info("1. FinancialTransaction: " + tempFinancialTransactionList);
+            LOGGER.info("1. FinancialTransactionInDB: " + tempFinancialTransactionList);
 
             postgreAccountsDAO.modify(tempFinancialTransactionList);
-            long timeEnd = System.currentTimeMillis();
-            LOGGER.info("Execution time - " + (timeEnd - timeStart));
         }), 0, 20, TimeUnit.SECONDS);
     }
 }

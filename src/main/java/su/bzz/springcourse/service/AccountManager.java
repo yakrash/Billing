@@ -6,6 +6,7 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import su.bzz.springcourse.dao.PostgreAccountsDAO;
@@ -32,6 +33,7 @@ public class AccountManager {
                 }
             });
 
+    @Autowired
     public AccountManager(PostgreAccountsDAO postgreAccountsDAO) {
         this.postgreAccountsDAO = postgreAccountsDAO;
     }

@@ -27,3 +27,7 @@
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 /.idea/
+/billing.log.2020-06-11.0.gz
+/billing.log.2020-06-12.0.gz
+/billing.log.2020-06-15.0.gz
+/billing.log.2020-06-18.0.gz
