@@ -17,14 +17,14 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 @Service
-public class UpdateManager {
+public class UpdateManagerAmountInDB {
     private static final Logger LOGGER = LoggerFactory.getLogger(TransactionLogger.class);
     private final BlockingQueue<FinancialTransaction> tempBlockingQueueFinancialTransaction = new LinkedBlockingQueue<>();
     private final ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
     private final PostgreAccountsDAO postgreAccountsDAO;
 
     @Autowired
-    public UpdateManager(PostgreAccountsDAO postgreAccountsDAO) {
+    public UpdateManagerAmountInDB(PostgreAccountsDAO postgreAccountsDAO) {
         this.postgreAccountsDAO = postgreAccountsDAO;
     }
 

@@ -27,13 +27,13 @@ public class TransactionLogger {
     private final ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
     private final PostgresLoggerDAO postgresLoggerDAO;
     private final AccountManager accountManager;
-    private final UpdateManager updateManager;
+    private final UpdateManagerAmountInDB updateManagerAmountInDB;
 
     @Autowired
-    public TransactionLogger(PostgresLoggerDAO postgresLoggerDAO, AccountManager accountManager, UpdateManager updateManager) {
+    public TransactionLogger(PostgresLoggerDAO postgresLoggerDAO, AccountManager accountManager, UpdateManagerAmountInDB updateManagerAmountInDB) {
         this.postgresLoggerDAO = postgresLoggerDAO;
         this.accountManager = accountManager;
-        this.updateManager = updateManager;
+        this.updateManagerAmountInDB = updateManagerAmountInDB;
     }
 
     public void push(FinancialTransaction financialTransaction) {
@@ -61,7 +61,7 @@ public class TransactionLogger {
                 LOGGER.warn(e.toString());
             }
 
-            updateManager.push(tempFinancialTransaction);
+            updateManagerAmountInDB.push(tempFinancialTransaction);
 
         }), 0, 3, TimeUnit.SECONDS);
     }
