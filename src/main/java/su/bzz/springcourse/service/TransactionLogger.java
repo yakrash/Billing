@@ -13,7 +13,6 @@ import javax.annotation.PreDestroy;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ScheduledExecutorService;
@@ -53,12 +52,8 @@ public class TransactionLogger {
 
             postgresLoggerDAO.insert(tempFinancialTransaction);
 
-            try {
-                for (FinancialTransaction ft : tempFinancialTransaction) {
-                    accountManager.modify(ft);
-                }
-            } catch (ExecutionException e) {
-                LOGGER.warn(e.toString());
+            for (FinancialTransaction ft : tempFinancialTransaction) {
+                accountManager.modify(ft);
             }
 
             updateManagerAmountInDB.push(tempFinancialTransaction);

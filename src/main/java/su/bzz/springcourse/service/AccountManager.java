@@ -12,8 +12,6 @@ import org.springframework.stereotype.Service;
 import su.bzz.springcourse.dao.PostgreAccountsDAO;
 import su.bzz.springcourse.model.Account;
 import su.bzz.springcourse.model.FinancialTransaction;
-
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -38,12 +36,13 @@ public class AccountManager {
         this.postgreAccountsDAO = postgreAccountsDAO;
     }
 
-    public void createAccount(double debit, double credit) {
-        long createId = postgreAccountsDAO.create(debit, credit);
-        accounts.put(createId, new Account(createId, debit, credit));
+    public void createAccount() {
+        long createId = postgreAccountsDAO.create(0, 0);
+        accounts.put(createId, new Account(createId, 0, 0));
+        LOGGER.info("Account created, id:" + createId);
     }
 
-    public void modify(FinancialTransaction financialTransaction) throws ExecutionException {
+    public void modify(FinancialTransaction financialTransaction) {
         try {
             Account src = accounts.get(financialTransaction.getSrc());
             Account dst = accounts.get(financialTransaction.getDst());
@@ -56,6 +55,15 @@ public class AccountManager {
             accounts.put(dst.getId(), dst);
         } catch (Exception e) {
             LOGGER.warn(e.toString());
+        }
+    }
+
+    public Account getAccount(long id) {
+        try {
+            return accounts.get(id);
+        } catch (Exception e) {
+            LOGGER.warn(e.toString());
+            return null;
         }
     }
 }
