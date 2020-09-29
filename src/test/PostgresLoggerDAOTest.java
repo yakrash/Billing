@@ -13,7 +13,7 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
-public class PostgresLoggerDAOTest {
+public class PostgresLoggerDAOTest  {
     private static JdbcTemplate jdbcTemplate;
 
     @BeforeClass
