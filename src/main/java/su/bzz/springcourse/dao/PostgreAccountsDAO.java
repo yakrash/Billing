@@ -8,7 +8,9 @@ import org.springframework.transaction.annotation.Transactional;
 import su.bzz.springcourse.model.Account;
 import su.bzz.springcourse.model.FinancialTransaction;
 
+import java.sql.SQLException;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class PostgreAccountsDAO implements AccountsDAO {
@@ -34,14 +36,17 @@ public class PostgreAccountsDAO implements AccountsDAO {
 
     @Transactional
     @Override
-    public Account get(long id) {
+    public Account get(long id) throws SQLException {
         String sql = "SELECT * FROM ACCOUNTS WHERE ID=?";
-        return jdbcTemplate.queryForObject(sql, rowMapper, id);
+
+        return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, id))
+                .orElseThrow(SQLException::new);
+
     }
 
     @Override
     @Transactional
-    public void modify(List<FinancialTransaction> financialTransactionsList) {
+    public void modify(List<FinancialTransaction> financialTransactionsList) throws SQLException {
         String sql = "UPDATE ACCOUNTS SET debit=?, credit=? WHERE id=?";
 
         for (FinancialTransaction e : financialTransactionsList) {
