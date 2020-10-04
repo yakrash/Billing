@@ -8,7 +8,6 @@ import su.bzz.springcourse.dao.PostgreAccountsDAO;
 import su.bzz.springcourse.model.FinancialTransaction;
 
 import javax.annotation.PostConstruct;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
@@ -39,13 +38,8 @@ public class UpdateManagerAmountInDB {
             List<FinancialTransaction> tempFinancialTransactionList = new ArrayList<>();
 
             tempBlockingQueueFinancialTransaction.drainTo(tempFinancialTransactionList);
-            LOGGER.info("1. FinancialTransactionInDB: " + tempFinancialTransactionList);
-
-            try {
-                postgreAccountsDAO.modify(tempFinancialTransactionList);
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+            postgreAccountsDAO.modify(tempFinancialTransactionList);
+            LOGGER.info("3. Update amount in DB (Accounts): " + tempFinancialTransactionList);
         }), 0, 20, TimeUnit.SECONDS);
     }
 }

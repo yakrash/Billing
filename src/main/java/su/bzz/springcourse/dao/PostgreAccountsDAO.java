@@ -1,19 +1,22 @@
 package su.bzz.springcourse.dao;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import su.bzz.springcourse.model.Account;
 import su.bzz.springcourse.model.FinancialTransaction;
+import su.bzz.springcourse.service.TransactionLogger;
 
-import java.sql.SQLException;
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public class PostgreAccountsDAO implements AccountsDAO {
+    private static final Logger LOGGER = LoggerFactory.getLogger(TransactionLogger.class);
     private final JdbcTemplate jdbcTemplate;
     private final RowMapper<Account> rowMapper = (rs, i) -> {
         Account account = new Account();
@@ -36,17 +39,20 @@ public class PostgreAccountsDAO implements AccountsDAO {
 
     @Transactional
     @Override
-    public Account get(long id) throws SQLException {
-        String sql = "SELECT * FROM ACCOUNTS WHERE ID=?";
-
-        return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, id))
-                .orElseThrow(SQLException::new);
+    public Account get(long id) {
+        try {
+            String sql = "SELECT * FROM ACCOUNTS WHERE ID=?";
+            return jdbcTemplate.queryForObject(sql, rowMapper, id);
+        } catch (EmptyResultDataAccessException e) {
+            LOGGER.warn("Account not found, error: " + e.toString());
+            return null;
+        }
 
     }
 
     @Override
     @Transactional
-    public void modify(List<FinancialTransaction> financialTransactionsList) throws SQLException {
+    public void modify(List<FinancialTransaction> financialTransactionsList) {
         String sql = "UPDATE ACCOUNTS SET debit=?, credit=? WHERE id=?";
 
         for (FinancialTransaction e : financialTransactionsList) {

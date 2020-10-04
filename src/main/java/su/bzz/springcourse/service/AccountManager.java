@@ -7,27 +7,31 @@ import com.google.common.cache.LoadingCache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import su.bzz.springcourse.dao.PostgreAccountsDAO;
 import su.bzz.springcourse.model.Account;
 import su.bzz.springcourse.model.FinancialTransaction;
+
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 @Service
 public class AccountManager {
+    private static final Account NULL = new Account();
     private static final Logger LOGGER = LoggerFactory.getLogger(TransactionLogger.class);
     private final PostgreAccountsDAO postgreAccountsDAO;
-    @Value("${accountManager.expireAfterAccessDuration}")
-    private int expireAfterAccessDuration;
+    private final long expireAfterAccessDuration = 10;
 
     private final LoadingCache<Long, Account> accounts = CacheBuilder.newBuilder()
             .expireAfterAccess(expireAfterAccessDuration, TimeUnit.MINUTES)
             .maximumSize(100)
             .build(new CacheLoader<Long, Account>() {
                 @Override
-                public Account load(Long id) throws Exception {
-                    return postgreAccountsDAO.get(id);
+                public Account load(Long id) {
+                    Account account = postgreAccountsDAO.get(id);
+                    if (account == null)
+                        return NULL;
+                    return account;
                 }
             });
 
@@ -53,17 +57,20 @@ public class AccountManager {
 
             accounts.put(src.getId(), src);
             accounts.put(dst.getId(), dst);
-        } catch (Exception e) {
-            LOGGER.warn(e.toString());
+        } catch (ExecutionException e) {
+            LOGGER.warn("Error in AccountManager.modify: " + e.toString());
         }
     }
 
     public Account getAccount(long id) {
         try {
-            return accounts.get(id);
-        } catch (Exception e) {
-            LOGGER.warn(e.toString());
+            Account account = accounts.get(id);
+            if (account == NULL) return null;
+            return account;
+        } catch (ExecutionException e) {
+            LOGGER.warn("Error in AccountManager.getAccount: " + e.toString());
             return null;
         }
+
     }
 }
