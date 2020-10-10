@@ -29,8 +29,9 @@ public class AccountManager {
                 @Override
                 public Account load(Long id) {
                     Account account = postgreAccountsDAO.get(id);
-                    if (account == null)
+                    if (account == null) {
                         return NULL;
+                    }
                     return account;
                 }
             });
@@ -65,7 +66,9 @@ public class AccountManager {
     public Account getAccount(long id) {
         try {
             Account account = accounts.get(id);
-            if (account == NULL) return null;
+            if (account == NULL) {
+                return null;
+            }
             return account;
         } catch (ExecutionException e) {
             LOGGER.warn("Error in AccountManager.getAccount: " + e.toString());
