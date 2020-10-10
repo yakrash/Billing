@@ -25,6 +25,5 @@ public class PostgresLoggerDAO implements FinancialTransactionDAO {
         for (FinancialTransaction e : financialTransactionList) {
             jdbcTemplate.update(sql, e.getSrc(), e.getDst(), e.getAmount());
         }
-
     }
 }

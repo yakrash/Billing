@@ -13,7 +13,6 @@ import javax.annotation.PreDestroy;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ScheduledExecutorService;
@@ -22,22 +21,18 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class TransactionLogger {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(TransactionLogger.class);
     private final BlockingQueue<FinancialTransaction> loggerFinancialTransaction = new LinkedBlockingQueue<>();
     private final ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
     private final PostgresLoggerDAO postgresLoggerDAO;
-    private static final Logger LOGGER = LoggerFactory.getLogger(TransactionLogger.class);
     private final AccountManager accountManager;
-    private final UpdateManager updateManager;
-
-    public TransactionLogger(PostgresLoggerDAO postgresLoggerDAO, AccountManager accountManager, UpdateManager updateManager) {
-        this.postgresLoggerDAO = postgresLoggerDAO;
-        this.accountManager = accountManager;
-        this.updateManager = updateManager;
-    }
+    private final UpdateManagerAmountInDB updateManagerAmountInDB;
 
     @Autowired
-    public BlockingQueue<FinancialTransaction> getLoggerFinancialTransaction() {
-        return loggerFinancialTransaction;
+    public TransactionLogger(PostgresLoggerDAO postgresLoggerDAO, AccountManager accountManager, UpdateManagerAmountInDB updateManagerAmountInDB) {
+        this.postgresLoggerDAO = postgresLoggerDAO;
+        this.accountManager = accountManager;
+        this.updateManagerAmountInDB = updateManagerAmountInDB;
     }
 
     public void push(FinancialTransaction financialTransaction) {
@@ -57,15 +52,11 @@ public class TransactionLogger {
 
             postgresLoggerDAO.insert(tempFinancialTransaction);
 
-            try {
-                for (FinancialTransaction ft : tempFinancialTransaction) {
-                    accountManager.modify(ft);
-                }
-            } catch (ExecutionException e) {
-                LOGGER.warn(e.toString());
+            for (FinancialTransaction ft : tempFinancialTransaction) {
+                accountManager.modify(ft);
             }
 
-            updateManager.push(tempFinancialTransaction);
+            updateManagerAmountInDB.push(tempFinancialTransaction);
 
         }), 0, 3, TimeUnit.SECONDS);
     }
@@ -74,5 +65,4 @@ public class TransactionLogger {
     public void shutDownExecutorService() {
         executorService.shutdown();
     }
-
 }

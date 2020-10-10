@@ -13,14 +13,14 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
-public class PostgresLoggerDAOTest {
+public class PostgresLoggerDAOTest  {
     private static JdbcTemplate jdbcTemplate;
 
     @BeforeClass
     public static void beforeClass() {
         DataSource dataSource = new EmbeddedDatabaseBuilder()
                 .setType(EmbeddedDatabaseType.H2)
-                .addScript("classpath:postgresql_billing_db.sql")
+                .addScript("classpath:financial_transaction.sql")
                 .build();
 
         jdbcTemplate = new JdbcTemplate(dataSource);
@@ -28,31 +28,31 @@ public class PostgresLoggerDAOTest {
 
         List<FinancialTransaction> financialTransactionList = new ArrayList<>();
         financialTransactionList.add(new FinancialTransaction(1, 10, 20));
+        financialTransactionList.add(new FinancialTransaction(2, 20, 40));
         postgresLoggerDAO.insert(financialTransactionList);
     }
 
     @Test
     public void equalsValueSrc() {
-        int src = jdbcTemplate.queryForObject("SELECT SRC FROM financial_transaction", Integer.class);
+        int src = jdbcTemplate.queryForObject("SELECT SRC FROM financial_transaction WHERE amount = 20", Integer.class);
         assertEquals(1, src);
     }
 
     @Test
     public void equalsValueDst() {
-        int dst = jdbcTemplate.queryForObject("SELECT DST FROM financial_transaction", Integer.class);
+        int dst = jdbcTemplate.queryForObject("SELECT DST FROM financial_transaction WHERE amount = 20", Integer.class);
         assertEquals(10, dst);
     }
 
     @Test
     public void equalsValueAmount() {
-        double amount = jdbcTemplate.queryForObject("SELECT AMOUNT FROM financial_transaction", Double.class);
+        double amount = jdbcTemplate.queryForObject("SELECT AMOUNT FROM financial_transaction WHERE src = 1", Double.class);
         Assert.assertEquals(20, amount, 1e-9);
     }
 
     @Test
     public void countRowAfterInsert() {
         int count = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM financial_transaction", Integer.class);
-        assertEquals(1, count);
+        assertEquals(2, count);
     }
-
 }

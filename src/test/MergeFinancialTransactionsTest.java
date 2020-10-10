@@ -11,7 +11,7 @@ public class MergeFinancialTransactionsTest {
     private final List<FinancialTransaction> testList = new ArrayList<>();
 
     @Test
-    public void validWorkingMerge2() {
+    public void validWorkingMerge2()  {
         testList.add(new FinancialTransaction(1, 2, 10));
         testList.add(new FinancialTransaction(1, 2, 50));
         testList.add(new FinancialTransaction(1, 2, 40));
@@ -30,6 +30,4 @@ public class MergeFinancialTransactionsTest {
         Assert.assertEquals(mergeList.get(2).getAmount(), 70.0, 1e-9);
         Assert.assertEquals(mergeList.get(3).getAmount(), 10.0, 1e-9);
     }
-
-
 }
