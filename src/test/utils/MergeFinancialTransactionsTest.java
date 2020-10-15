@@ -1,3 +1,5 @@
+package utils;
+
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import su.bzz.springcourse.model.FinancialTransaction;
