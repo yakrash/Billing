@@ -59,8 +59,8 @@ public class PostgreAccountsDAO implements AccountsDAO {
             Account accountDstFromDB = get(e.getDst());
             Account accountSrcFromDB = get(e.getSrc());
 
-            accountSrcFromDB.setDebit(accountSrcFromDB.getDebit() + e.getAmount());
-            accountDstFromDB.setCredit(accountDstFromDB.getCredit() + e.getAmount());
+            accountSrcFromDB.setCredit(accountSrcFromDB.getCredit() + e.getAmount());
+            accountDstFromDB.setDebit(accountDstFromDB.getDebit() + e.getAmount());
 
             jdbcTemplate.update(sql, (ps) -> {
                 int i = 0;
