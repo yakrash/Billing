@@ -35,11 +35,11 @@ public class PostgreAccountsDAOTest {
         jdbcTemplate.update(sql, 10, 20);
     }
 
-//    @Test
-//    public void methodCreateTest(){
-//        long count = postgreAccountsDAO.create(10, 20);
-//        assertEquals(1, count);
-//    }
+    @Test
+    public void methodCreateTest() {
+        long count = postgreAccountsDAO.create(10, 20);
+        assertEquals(4, count);
+    }
 
     @Test
     public void methodGetTestAccountValid() {

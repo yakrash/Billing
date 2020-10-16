@@ -6,12 +6,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import su.bzz.springcourse.model.Account;
 import su.bzz.springcourse.model.FinancialTransaction;
 import su.bzz.springcourse.service.TransactionLogger;
 
+import java.sql.PreparedStatement;
 import java.util.List;
 
 @Repository
@@ -33,8 +36,18 @@ public class PostgreAccountsDAO implements AccountsDAO {
 
     @Override
     public long create(double debit, double credit) {
-        String sql = "INSERT INTO accounts(debit, credit) values(?, ?) RETURNING id";
-        return jdbcTemplate.queryForObject(sql, Long.class, debit, credit);
+        String sql = "INSERT INTO accounts(debit, credit) values(?, ?)";
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+
+        jdbcTemplate.update(connection -> {
+            PreparedStatement ps = connection
+                    .prepareStatement(sql, new String[]{"id"});
+            ps.setDouble(1, debit);
+            ps.setDouble(2, credit);
+            return ps;
+        }, keyHolder);
+
+        return keyHolder.getKey().longValue();
     }
 
     @Transactional
