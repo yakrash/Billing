@@ -1,6 +1,7 @@
 package dao;
 
-import org.junit.BeforeClass;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
@@ -19,34 +20,37 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class PostgreAccountsDAOTest {
     private static PostgreAccountsDAO postgreAccountsDAO;
+    private static JdbcTemplate jdbcTemplate;
+    String sql = "INSERT INTO accounts(debit, credit) values(?, ?)";
 
-    @BeforeClass
-    public static void beforeClass() {
+    @Before
+    public void before() {
         DataSource dataSource = new EmbeddedDatabaseBuilder()
                 .setType(EmbeddedDatabaseType.H2)
                 .addScript("classpath:accounts.sql")
                 .build();
-        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+        jdbcTemplate = new JdbcTemplate(dataSource);
         postgreAccountsDAO = new PostgreAccountsDAO(jdbcTemplate);
+    }
 
-        String sql = "INSERT INTO accounts(debit, credit) values(?, ?)";
-        jdbcTemplate.update(sql, 10, 20);
-        jdbcTemplate.update(sql, 40, 50);
-        jdbcTemplate.update(sql, 100, 200);
+    @After
+    public void after() {
+        jdbcTemplate.execute("drop table accounts");
     }
 
     @Test
     public void methodCreateTest() {
-        Account accountNewTest = new Account(4, 10, 20);
+        Account accountNewTest = new Account(1, 10, 20);
         long count = postgreAccountsDAO.create(10, 20);
-        assertEquals(4, count);
-        assertEquals(accountNewTest, postgreAccountsDAO.get(4));
+        assertEquals(1, count);
+        assertEquals(accountNewTest, postgreAccountsDAO.get(1));
     }
 
     @Test
     public void methodGetTestAccountValid() {
-        Account account = postgreAccountsDAO.get(3);
-        Account accountNotNull = new Account(3, 100, 200);
+        jdbcTemplate.update(sql, 100, 200);
+        Account account = postgreAccountsDAO.get(1);
+        Account accountNotNull = new Account(1, 100, 200);
         assertEquals(accountNotNull, account);
     }
 
@@ -58,6 +62,9 @@ public class PostgreAccountsDAOTest {
 
     @Test
     public void checkSumInMethodModify() {
+        jdbcTemplate.update(sql, 10, 20);
+        jdbcTemplate.update(sql, 40, 50);
+
         List<FinancialTransaction> financialTransactionList = new ArrayList<>();
         financialTransactionList.add(new FinancialTransaction(1, 2, 100));
         financialTransactionList.add(new FinancialTransaction(2, 1, 50));
@@ -70,7 +77,6 @@ public class PostgreAccountsDAOTest {
 
         assertEquals(account1AfterModify, account1);
         assertEquals(account2AfterModify, account2);
-
     }
 }
 

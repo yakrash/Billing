@@ -1,7 +1,7 @@
 package dao;
 
-import org.junit.Assert;
-import org.junit.BeforeClass;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
@@ -18,8 +18,8 @@ import static org.junit.Assert.assertEquals;
 public class PostgresLoggerDAOTest {
     private static JdbcTemplate jdbcTemplate;
 
-    @BeforeClass
-    public static void beforeClass() {
+    @Before
+    public void before() {
         DataSource dataSource = new EmbeddedDatabaseBuilder()
                 .setType(EmbeddedDatabaseType.H2)
                 .addScript("classpath:financial_transaction.sql")
@@ -32,6 +32,11 @@ public class PostgresLoggerDAOTest {
         financialTransactionList.add(new FinancialTransaction(1, 10, 20));
         financialTransactionList.add(new FinancialTransaction(2, 20, 40));
         postgresLoggerDAO.insert(financialTransactionList);
+    }
+
+    @After
+    public void after() {
+        jdbcTemplate.execute("drop table financial_transaction");
     }
 
     @Test
@@ -52,7 +57,7 @@ public class PostgresLoggerDAOTest {
     public void equalsValueAmount() {
         double amount = jdbcTemplate
                 .queryForObject("SELECT AMOUNT FROM financial_transaction WHERE src = 1", Double.class);
-        Assert.assertEquals(20, amount, 1e-9);
+        assertEquals(20, amount, 1e-9);
     }
 
     @Test

@@ -1,6 +1,7 @@
 package service;
 
-import org.junit.BeforeClass;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
@@ -17,24 +18,29 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class AccountManagerTest {
     private static AccountManager accountManager;
+    private static JdbcTemplate jdbcTemplate;
 
-    @BeforeClass
-    public static void beforeClass() {
+    @Before
+    public void before() {
         DataSource dataSource = new EmbeddedDatabaseBuilder()
                 .setType(EmbeddedDatabaseType.H2)
                 .addScript("classpath:accounts.sql")
                 .build();
 
-        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+        jdbcTemplate = new JdbcTemplate(dataSource);
         PostgreAccountsDAO postgreAccountsDAO = new PostgreAccountsDAO(jdbcTemplate);
         accountManager = new AccountManager(postgreAccountsDAO);
-        accountManager.createAccount();
-        accountManager.createAccount();
-        accountManager.createAccount();
+    }
+
+    @After
+    public void after() {
+        jdbcTemplate.execute("drop table accounts");
     }
 
     @Test
     public void methodModifyCheckSum() {
+        accountManager.createAccount();
+        accountManager.createAccount();
         FinancialTransaction financialTransaction = new FinancialTransaction(1, 2, 100);
         Account account1AfterModify = new Account(1, 0, 100);
         Account account2AfterModify = new Account(2, 100, 0);
@@ -46,8 +52,9 @@ public class AccountManagerTest {
 
     @Test
     public void methodGetTest() {
-        Account account = new Account(3, 0, 0);
-        assertEquals(account, accountManager.getAccount(3));
+        accountManager.createAccount();
+        Account account = new Account(1, 0, 0);
+        assertEquals(account, accountManager.getAccount(1));
     }
 
     @Test
