@@ -15,7 +15,7 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
-public class PostgresLoggerDAOTest  {
+public class PostgresLoggerDAOTest {
     private static JdbcTemplate jdbcTemplate;
 
     @BeforeClass
@@ -36,19 +36,22 @@ public class PostgresLoggerDAOTest  {
 
     @Test
     public void equalsValueSrc() {
-        int src = jdbcTemplate.queryForObject("SELECT SRC FROM financial_transaction WHERE amount = 20", Integer.class);
+        int src = jdbcTemplate
+                .queryForObject("SELECT SRC FROM financial_transaction WHERE amount = 20", Integer.class);
         assertEquals(1, src);
     }
 
     @Test
     public void equalsValueDst() {
-        int dst = jdbcTemplate.queryForObject("SELECT DST FROM financial_transaction WHERE amount = 20", Integer.class);
+        int dst = jdbcTemplate
+                .queryForObject("SELECT DST FROM financial_transaction WHERE amount = 20", Integer.class);
         assertEquals(10, dst);
     }
 
     @Test
     public void equalsValueAmount() {
-        double amount = jdbcTemplate.queryForObject("SELECT AMOUNT FROM financial_transaction WHERE src = 1", Double.class);
+        double amount = jdbcTemplate
+                .queryForObject("SELECT AMOUNT FROM financial_transaction WHERE src = 1", Double.class);
         Assert.assertEquals(20, amount, 1e-9);
     }
 

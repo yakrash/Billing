@@ -1,6 +1,5 @@
 package dao;
 
-import org.checkerframework.checker.units.qual.A;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.jdbc.core.JdbcTemplate;

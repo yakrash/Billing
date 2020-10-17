@@ -6,7 +6,7 @@ import su.bzz.springcourse.model.FinancialTransaction;
 import su.bzz.springcourse.utils.TransactionValidator;
 
 
-public class TransactionValidatorTest  {
+public class TransactionValidatorTest {
     private FinancialTransaction financialTransaction;
     private TransactionValidator transactionValidator = new TransactionValidator();
 
