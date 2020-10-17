@@ -1,5 +1,6 @@
 package dao;
 
+import org.checkerframework.checker.units.qual.A;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -32,25 +33,27 @@ public class PostgreAccountsDAOTest {
         String sql = "INSERT INTO accounts(debit, credit) values(?, ?)";
         jdbcTemplate.update(sql, 10, 20);
         jdbcTemplate.update(sql, 40, 50);
-        jdbcTemplate.update(sql, 10, 20);
+        jdbcTemplate.update(sql, 100, 200);
     }
 
     @Test
     public void methodCreateTest() {
+        Account accountNewTest = new Account(4, 10, 20);
         long count = postgreAccountsDAO.create(10, 20);
         assertEquals(4, count);
+        assertEquals(accountNewTest, postgreAccountsDAO.get(4));
     }
 
     @Test
     public void methodGetTestAccountValid() {
         Account account = postgreAccountsDAO.get(3);
-        Account accountNotNull = new Account(3, 10, 20);
+        Account accountNotNull = new Account(3, 100, 200);
         assertEquals(accountNotNull, account);
     }
 
     @Test
     public void methodGetTestAccountNotFound() {
-        Account account = postgreAccountsDAO.get(4);
+        Account account = postgreAccountsDAO.get(99);
         assertNull(account);
     }
 
