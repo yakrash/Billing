@@ -27,6 +27,7 @@ public class TransactionLogger {
     private final PostgresLoggerDAO postgresLoggerDAO;
     private final AccountManager accountManager;
     private final UpdateManagerAmountInDB updateManagerAmountInDB;
+    private final Object mutex = new Object();
 
     @Autowired
     public TransactionLogger(PostgresLoggerDAO postgresLoggerDAO, AccountManager accountManager, UpdateManagerAmountInDB updateManagerAmountInDB) {
@@ -36,29 +37,41 @@ public class TransactionLogger {
     }
 
     public void push(FinancialTransaction financialTransaction) {
-        loggerFinancialTransaction.add(financialTransaction);
+        synchronized (mutex) {
+            loggerFinancialTransaction.add(financialTransaction);
+            try {
+                mutex.wait();
+            } catch (InterruptedException e) {
+                LOGGER.warn("В методе TransactionLogger.push исключение: " + e.toString());
+            }
+        }
     }
 
     @PostConstruct
     public void parserLoggerFT() {
+
         executorService.scheduleAtFixedRate(new Thread(() -> {
-            List<FinancialTransaction> tempFinancialTransaction = new ArrayList<>();
+            synchronized (mutex) {
+                List<FinancialTransaction> tempFinancialTransaction = new ArrayList<>();
 
-            loggerFinancialTransaction.drainTo(tempFinancialTransaction);
-            LOGGER.info("1. TempFT: " + tempFinancialTransaction);
+                loggerFinancialTransaction.drainTo(tempFinancialTransaction);
+                LOGGER.info("1. TempFT: " + tempFinancialTransaction);
 
-            tempFinancialTransaction = MergeFinancialTransactions.merge(tempFinancialTransaction);
-            LOGGER.info("2. MergeTempFT: " + tempFinancialTransaction);
+                tempFinancialTransaction = MergeFinancialTransactions.merge(tempFinancialTransaction);
+                LOGGER.info("2. MergeTempFT: " + tempFinancialTransaction);
 
-            postgresLoggerDAO.insert(tempFinancialTransaction);
+                postgresLoggerDAO.insert(tempFinancialTransaction);
 
-            for (FinancialTransaction ft : tempFinancialTransaction) {
-                accountManager.modify(ft);
+                for (FinancialTransaction ft : tempFinancialTransaction) {
+                    accountManager.modify(ft);
+                }
+
+                updateManagerAmountInDB.push(tempFinancialTransaction);
+
+                mutex.notifyAll();
             }
-
-            updateManagerAmountInDB.push(tempFinancialTransaction);
-
         }), 0, 3, TimeUnit.SECONDS);
+
     }
 
     @PreDestroy
