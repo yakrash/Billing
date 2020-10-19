@@ -11,7 +11,9 @@ import su.bzz.springcourse.utils.MergeFinancialTransactions;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -27,7 +29,7 @@ public class TransactionLogger {
     private final PostgresLoggerDAO postgresLoggerDAO;
     private final AccountManager accountManager;
     private final UpdateManagerAmountInDB updateManagerAmountInDB;
-    private final Object mutex = new Object();
+    private final Map<Integer, Object> mapMutex = new HashMap();
 
     @Autowired
     public TransactionLogger(PostgresLoggerDAO postgresLoggerDAO, AccountManager accountManager, UpdateManagerAmountInDB updateManagerAmountInDB) {
@@ -37,13 +39,17 @@ public class TransactionLogger {
     }
 
     public void push(FinancialTransaction financialTransaction) {
-        synchronized (mutex) {
+        mapMutex.put(financialTransaction.hashCode(), new Object());
+        synchronized (mapMutex.get(financialTransaction.hashCode())) {
             loggerFinancialTransaction.add(financialTransaction);
+
+            LOGGER.info("Удерживаем транзакцию");
             try {
-                mutex.wait();
+                mapMutex.get(financialTransaction.hashCode()).wait();
             } catch (InterruptedException e) {
                 LOGGER.warn("В методе TransactionLogger.push исключение: " + e.toString());
             }
+            LOGGER.info("Отпускаем транзакцию");
         }
     }
 
@@ -51,25 +57,27 @@ public class TransactionLogger {
     public void parserLoggerFT() {
 
         executorService.scheduleAtFixedRate(new Thread(() -> {
-            synchronized (mutex) {
-                List<FinancialTransaction> tempFinancialTransaction = new ArrayList<>();
 
-                loggerFinancialTransaction.drainTo(tempFinancialTransaction);
-                LOGGER.info("1. TempFT: " + tempFinancialTransaction);
+            List<FinancialTransaction> tempFinancialTransaction = new ArrayList<>();
 
-                tempFinancialTransaction = MergeFinancialTransactions.merge(tempFinancialTransaction);
-                LOGGER.info("2. MergeTempFT: " + tempFinancialTransaction);
+            loggerFinancialTransaction.drainTo(tempFinancialTransaction);
+            LOGGER.info("1. TempFT: " + tempFinancialTransaction);
 
-                postgresLoggerDAO.insert(tempFinancialTransaction);
+            tempFinancialTransaction = MergeFinancialTransactions.merge(tempFinancialTransaction);
+            LOGGER.info("2. MergeTempFT: " + tempFinancialTransaction);
 
-                for (FinancialTransaction ft : tempFinancialTransaction) {
+            postgresLoggerDAO.insert(tempFinancialTransaction);
+
+            for (FinancialTransaction ft : tempFinancialTransaction) {
+                synchronized (mapMutex.get(ft.hashCode())) {
                     accountManager.modify(ft);
+
+                    mapMutex.get(ft.hashCode()).notifyAll();
                 }
-
-                updateManagerAmountInDB.push(tempFinancialTransaction);
-
-                mutex.notifyAll();
             }
+
+            updateManagerAmountInDB.push(tempFinancialTransaction);
+
         }), 0, 3, TimeUnit.SECONDS);
 
     }
