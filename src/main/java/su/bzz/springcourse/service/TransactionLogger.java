@@ -29,7 +29,7 @@ public class TransactionLogger {
     private final PostgresLoggerDAO postgresLoggerDAO;
     private final AccountManager accountManager;
     private final UpdateManagerAmountInDB updateManagerAmountInDB;
-    private final Map<Integer, Object> mapMutex = new HashMap();
+    private final Object mutex = new Object();
 
     @Autowired
     public TransactionLogger(PostgresLoggerDAO postgresLoggerDAO, AccountManager accountManager, UpdateManagerAmountInDB updateManagerAmountInDB) {
@@ -39,25 +39,25 @@ public class TransactionLogger {
     }
 
     public void push(FinancialTransaction financialTransaction) {
-        mapMutex.put(financialTransaction.hashCode(), new Object());
-        synchronized (mapMutex.get(financialTransaction.hashCode())) {
+        Thread thread = new Thread(() -> {
             loggerFinancialTransaction.add(financialTransaction);
-
             LOGGER.info("Удерживаем транзакцию");
-            try {
-                mapMutex.get(financialTransaction.hashCode()).wait();
-            } catch (InterruptedException e) {
-                LOGGER.warn("В методе TransactionLogger.push исключение: " + e.toString());
+            synchronized (mutex) {
+                try {
+                    mutex.wait();
+                } catch (InterruptedException e) {
+                    LOGGER.warn("В методе TransactionLogger.push исключение: " + e.toString());
+                }
+                LOGGER.info("Отпускаем транзакцию");
             }
-            LOGGER.info("Отпускаем транзакцию");
-        }
+        });
+        thread.start();
     }
 
     @PostConstruct
     public void parserLoggerFT() {
 
         executorService.scheduleAtFixedRate(new Thread(() -> {
-
             List<FinancialTransaction> tempFinancialTransaction = new ArrayList<>();
 
             loggerFinancialTransaction.drainTo(tempFinancialTransaction);
@@ -69,14 +69,13 @@ public class TransactionLogger {
             postgresLoggerDAO.insert(tempFinancialTransaction);
 
             for (FinancialTransaction ft : tempFinancialTransaction) {
-                synchronized (mapMutex.get(ft.hashCode())) {
-                    accountManager.modify(ft);
-
-                    mapMutex.get(ft.hashCode()).notifyAll();
-                }
+                accountManager.modify(ft);
             }
-
             updateManagerAmountInDB.push(tempFinancialTransaction);
+
+            synchronized (mutex) {
+                mutex.notifyAll();
+            }
 
         }), 0, 3, TimeUnit.SECONDS);
 
