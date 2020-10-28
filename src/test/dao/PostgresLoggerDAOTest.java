@@ -1,5 +1,7 @@
-import org.junit.Assert;
-import org.junit.BeforeClass;
+package dao;
+
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
@@ -13,11 +15,11 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
-public class PostgresLoggerDAOTest  {
+public class PostgresLoggerDAOTest {
     private static JdbcTemplate jdbcTemplate;
 
-    @BeforeClass
-    public static void beforeClass() {
+    @Before
+    public void before() {
         DataSource dataSource = new EmbeddedDatabaseBuilder()
                 .setType(EmbeddedDatabaseType.H2)
                 .addScript("classpath:financial_transaction.sql")
@@ -32,22 +34,30 @@ public class PostgresLoggerDAOTest  {
         postgresLoggerDAO.insert(financialTransactionList);
     }
 
+    @After
+    public void after() {
+        jdbcTemplate.execute("drop table financial_transaction");
+    }
+
     @Test
     public void equalsValueSrc() {
-        int src = jdbcTemplate.queryForObject("SELECT SRC FROM financial_transaction WHERE amount = 20", Integer.class);
+        int src = jdbcTemplate
+                .queryForObject("SELECT SRC FROM financial_transaction WHERE amount = 20", Integer.class);
         assertEquals(1, src);
     }
 
     @Test
     public void equalsValueDst() {
-        int dst = jdbcTemplate.queryForObject("SELECT DST FROM financial_transaction WHERE amount = 20", Integer.class);
+        int dst = jdbcTemplate
+                .queryForObject("SELECT DST FROM financial_transaction WHERE amount = 20", Integer.class);
         assertEquals(10, dst);
     }
 
     @Test
     public void equalsValueAmount() {
-        double amount = jdbcTemplate.queryForObject("SELECT AMOUNT FROM financial_transaction WHERE src = 1", Double.class);
-        Assert.assertEquals(20, amount, 1e-9);
+        double amount = jdbcTemplate
+                .queryForObject("SELECT AMOUNT FROM financial_transaction WHERE src = 1", Double.class);
+        assertEquals(20, amount, 1e-9);
     }
 
     @Test

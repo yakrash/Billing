@@ -1,3 +1,5 @@
+package utils;
+
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import su.bzz.springcourse.model.FinancialTransaction;
@@ -11,7 +13,7 @@ public class MergeFinancialTransactionsTest {
     private final List<FinancialTransaction> testList = new ArrayList<>();
 
     @Test
-    public void validWorkingMerge2()  {
+    public void validWorkingMerge2() {
         testList.add(new FinancialTransaction(1, 2, 10));
         testList.add(new FinancialTransaction(1, 2, 50));
         testList.add(new FinancialTransaction(1, 2, 40));
